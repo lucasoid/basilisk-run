@@ -1,0 +1,26 @@
+{
+    "name": "basilisk-run",
+    "version": "1.0.0",
+    "description": "Basilisk Run game",
+    "main": "src/index.js",
+    "dependencies": {
+        "phaser": "^3.21.0"
+    },
+    "devDependencies": {
+        "husky": "^3.1.0",
+        "parcel-bundler": "^1.12.4",
+        "prettier": "^1.19.1",
+        "pretty-quick": "^2.0.1"
+    },
+    "scripts": {
+        "serve": "parcel src/index.html",
+        "build": "parcel build src/index.html"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged"
+        }
+    },
+    "author": "Ben Lucas <ben@breakoutlogic.com>",
+    "license": "ISC"
+}
