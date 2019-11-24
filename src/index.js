@@ -1,2 +1,4 @@
+import { mountGame } from './game';
+
 const el = document.getElementById('root');
-el.innerHTML = '<br/><br/><center>[canvas here]</center>';
+const game = mountGame(el);
