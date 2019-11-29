@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
 import constants from './constants';
-import sky from './assets/sky.png';
+import sky from './assets/sky-day.png';
 import ground from './assets/ground.png';
-import basilisk from './assets/basilisk.png';
+import * as basilisk from './basilisk';
 
 let player;
 
@@ -10,56 +10,47 @@ export function mountGame(el) {
     return new Phaser.Game({
         parent: el,
         type: Phaser.AUTO,
-        width: constants.WIDTH,
-        height: constants.HEIGHT,
+        width: constants.scene.WIDTH,
+        height: constants.scene.HEIGHT,
         physics: {
             default: 'arcade',
             arcade: {
-                gravity: { y: 300 },
+                gravity: { y: 500 },
             },
         },
         scene: {
             preload: function() {
                 this.load.image('sky', sky);
                 this.load.image('ground', ground);
-                this.load.image('basilisk', basilisk);
+                basilisk.loadSpritesheet(this);
             },
             create: function() {
                 this.add.image(
-                    constants.WIDTH / 2,
-                    constants.HEIGHT / 2,
+                    constants.scene.WIDTH / 2,
+                    constants.scene.HEIGHT / 2,
                     'sky'
                 );
 
                 const ground = this.physics.add.staticGroup();
                 ground.create(
-                    constants.WIDTH / 2,
-                    constants.HEIGHT - constants.GROUND_HEIGHT / 2,
+                    constants.scene.WIDTH / 2,
+                    constants.scene.HEIGHT - constants.scene.GROUND_HEIGHT / 2,
                     'ground'
                 );
 
                 player = this.physics.add.sprite(
-                    constants.WIDTH / 2,
-                    constants.HEIGHT / 2,
-                    'basilisk'
+                    constants.scene.WIDTH / 2,
+                    constants.scene.HEIGHT / 2,
+                    basilisk.KEY
                 );
                 player.setBounce(0.2);
                 player.setCollideWorldBounds(true);
 
                 this.physics.add.collider(player, ground);
+                basilisk.registerAnimations(this);
             },
             update: function() {
-                const cursors = this.input.keyboard.createCursorKeys();
-                if (cursors.left.isDown) {
-                    player.setVelocityX(-160);
-                } else if (cursors.right.isDown) {
-                    player.setVelocityX(160);
-                } else {
-                    player.setVelocityX(0);
-                }
-                if (cursors.up.isDown && player.body.touching.down) {
-                    player.setVelocityY(-330);
-                }
+                basilisk.listenForUpdates(this, player);
             },
         },
     });

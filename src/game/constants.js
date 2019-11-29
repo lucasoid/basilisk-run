@@ -1,5 +1,7 @@
 export default {
-    WIDTH: 800,
-    HEIGHT: 600,
-    GROUND_HEIGHT: 50,
+    scene: {
+        WIDTH: 800,
+        HEIGHT: 500,
+        GROUND_HEIGHT: 50,
+    },
 };
