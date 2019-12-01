@@ -1,10 +1,7 @@
 import Phaser from 'phaser';
 import constants from './constants';
-import sky from './assets/sky-day.png';
-import ground from './assets/ground.png';
-import * as basilisk from './basilisk';
-
-let player;
+import * as player from './player';
+import * as level1 from './levels/level1';
 
 export function mountGame(el) {
     return new Phaser.Game({
@@ -20,37 +17,18 @@ export function mountGame(el) {
         },
         scene: {
             preload: function() {
-                this.load.image('sky', sky);
-                this.load.image('ground', ground);
-                basilisk.loadSpritesheet(this);
+                level1.preload(this);
+                player.preload(this);
             },
             create: function() {
-                this.add.image(
-                    constants.scene.WIDTH / 2,
-                    constants.scene.HEIGHT / 2,
-                    'sky'
-                );
+                const _level = level1.create(this);
+                const _player = player.create(this);
 
-                const ground = this.physics.add.staticGroup();
-                ground.create(
-                    constants.scene.WIDTH / 2,
-                    constants.scene.HEIGHT - constants.scene.GROUND_HEIGHT / 2,
-                    'ground'
-                );
-
-                player = this.physics.add.sprite(
-                    constants.scene.WIDTH / 2,
-                    constants.scene.HEIGHT / 2,
-                    basilisk.KEY
-                );
-                player.setBounce(0.2);
-                player.setCollideWorldBounds(true);
-
-                this.physics.add.collider(player, ground);
-                basilisk.registerAnimations(this);
+                this.physics.add.collider(_player, _level);
+                this.cameras.main.startFollow(_player);
             },
             update: function() {
-                basilisk.listenForUpdates(this, player);
+                player.update(this);
             },
         },
     });

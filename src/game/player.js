@@ -1,19 +1,24 @@
 export const KEY = 'basilisk';
 import basiliskSprites from './assets/basilisk-sprites.png';
 
+let player;
+
 export const animations = {
     LEFT: 'left',
     RIGHT: 'right',
 };
 
-export const loadSpritesheet = game => {
+export const preload = game => {
     game.load.spritesheet(KEY, basiliskSprites, {
         frameWidth: 250,
         frameHeight: 137.33,
     });
 };
 
-export const registerAnimations = game => {
+export const create = game => {
+    player = game.physics.add.sprite(250, 250, KEY);
+    player.setBounce(0.1);
+    player.setCollideWorldBounds(true);
     game.anims.create({
         key: animations.LEFT,
         // frames are 0-index
@@ -28,9 +33,10 @@ export const registerAnimations = game => {
         frameRate: 10,
         repeat: -1,
     });
+    return player;
 };
 
-export const listenForUpdates = (game, player) => {
+export const update = game => {
     const cursors = game.input.keyboard.createCursorKeys();
 
     if (cursors.left.isDown) {
@@ -39,7 +45,7 @@ export const listenForUpdates = (game, player) => {
     } else if (cursors.right.isDown) {
         player.setVelocityX(400);
         player.anims.play(animations.RIGHT, true);
-    } else if (player.body.touching.down) {
+    } else if (player.body.blocked.down) {
         // stop all animations
         player.anims.stop(null);
         // set the resting frame to either left or right
@@ -52,7 +58,7 @@ export const listenForUpdates = (game, player) => {
         player.setVelocityX(0);
     }
 
-    if (cursors.up.isDown && player.body.touching.down) {
-        player.setVelocityY(-300);
+    if (cursors.up.isDown && player.body.blocked.down) {
+        player.setVelocityY(-400);
     }
 };
