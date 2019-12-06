@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import constants from './constants';
 import * as player from './player';
 import * as level1 from './levels/level1';
+import * as worldPhysics from './worldPhysics';
 
 export function mountGame(el) {
     return new Phaser.Game({
@@ -21,10 +22,9 @@ export function mountGame(el) {
                 player.preload(this);
             },
             create: function() {
-                const _level = level1.create(this);
+                const { ground, water } = level1.create(this);
                 const _player = player.create(this);
-
-                this.physics.add.collider(_player, _level);
+                worldPhysics.create(this, _player, { ground, water });
                 this.cameras.main.startFollow(_player);
             },
             update: function() {

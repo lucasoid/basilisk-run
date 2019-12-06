@@ -18,9 +18,11 @@ export const create = game => {
     background.setScrollFactor(0);
     const map = game.make.tilemap({ key: 'map' });
     const tileset = map.addTilesetImage('base', 'tiles');
-    const layer = map.createStaticLayer('Tile Layer 1', tileset, 0, 0);
-    layer.setCollisionByProperty({ collides: true });
+    const ground = map.createStaticLayer('Ground', tileset, 0, 0);
+    const water = map.createStaticLayer('Water', tileset, 0, 0);
+    ground.setCollisionByProperty({ collides: true });
+    water.setCollisionByProperty({ collides: true });
     game.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     game.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-    return layer;
+    return { ground, water };
 };
