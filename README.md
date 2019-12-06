@@ -2,6 +2,10 @@
 
 Get back to your nest before a predator takes your eggs! Run across the rainforest to get to your destination. You can run across the water to escape predators, but only for a short distance. You can also swim, but watch out for underwater predators!
 
+## Demo
+
+Play it here: https://basilisk-run.web.app/
+
 ## About basilisk lizards
 
 ### Habitat
