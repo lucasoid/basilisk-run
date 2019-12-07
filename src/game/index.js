@@ -3,6 +3,7 @@ import constants from './constants';
 import * as player from './player';
 import * as level1 from './levels/level1';
 import * as worldPhysics from './worldPhysics';
+import * as energyMeter from './energyMeter';
 
 export function mountGame(el) {
     return new Phaser.Game({
@@ -19,10 +20,12 @@ export function mountGame(el) {
         scene: {
             preload: function() {
                 level1.preload(this);
+                energyMeter.preload(this);
                 player.preload(this);
             },
             create: function() {
                 const { ground, water } = level1.create(this);
+                energyMeter.create(this);
                 const _player = player.create(this);
                 worldPhysics.create(this, _player, { ground, water });
                 this.cameras.main.startFollow(_player);
