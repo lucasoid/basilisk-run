@@ -1,13 +1,58 @@
-export const KEY = 'basilisk';
+import {
+    getEnergyLevel,
+    setEnergyLevel,
+    getMaxEnergyLevel,
+} from './energyMeter';
 import basiliskSprites from './assets/basilisk-sprites.png';
+import * as levels from './levels';
 
-let player;
+export const KEY = 'basilisk';
+
+export let player;
+
 let SPEED = 400;
 let speedMultiplier = 1;
 
 export const animations = {
     LEFT: 'left',
     RIGHT: 'right',
+};
+
+const JESUS_MODE_LENGTH = 2000;
+
+let timer = null;
+let interval = null;
+
+const expendEnergy = () => {
+    setEnergyLevel(Math.max(0, getEnergyLevel() - 1));
+};
+
+const submerge = () => {
+    setEnergyLevel(0);
+    setSpeedMultiplier(0.5);
+};
+
+const emerge = () => {
+    setEnergyLevel(getMaxEnergyLevel());
+    setSpeedMultiplier(1);
+};
+
+const startJesusMode = () => {
+    interval = setInterval(() => {
+        expendEnergy();
+    }, JESUS_MODE_LENGTH / getMaxEnergyLevel());
+    timer = setTimeout(() => {
+        clearInterval(interval);
+        submerge();
+    }, JESUS_MODE_LENGTH);
+};
+
+const resetJesusMode = () => {
+    clearTimeout(timer);
+    timer = null;
+    clearInterval(interval);
+    interval = null;
+    emerge();
 };
 
 export const preload = game => {
@@ -35,7 +80,31 @@ export const create = game => {
         frameRate: 10,
         repeat: -1,
     });
-    return player;
+
+    // sink or swim logic:
+    game.physics.add.collider(
+        player,
+        levels.getGroundLayer(),
+        () => {
+            if (getEnergyLevel() < getMaxEnergyLevel()) {
+                resetJesusMode();
+            }
+        },
+        null
+    );
+    game.physics.add.collider(
+        player,
+        levels.getWaterLayer(),
+        () => {
+            if (player.body.velocity.x === 0 && getEnergyLevel() > 0) {
+                submerge();
+            } else if (timer === null) startJesusMode();
+        },
+        () => getEnergyLevel() > 0
+    );
+    game.physics.add.collider(player, levels.getShoreLayer());
+
+    game.cameras.main.startFollow(player);
 };
 
 export const update = game => {
