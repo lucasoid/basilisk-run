@@ -20,9 +20,11 @@ export const create = game => {
     const tileset = map.addTilesetImage('base', 'tiles');
     const ground = map.createStaticLayer('Ground', tileset, 0, 0);
     const water = map.createStaticLayer('Water', tileset, 0, 0);
+    const shoreline = map.createStaticLayer('Shoreline', tileset, 0, 0);
     ground.setCollisionByProperty({ collides: true });
     water.setCollisionByProperty({ collides: true });
+    shoreline.setCollisionByProperty({ collides: true });
     game.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     game.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-    return { ground, water };
+    return { ground, water, shoreline };
 };

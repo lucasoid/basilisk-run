@@ -3,36 +3,53 @@ import {
     setEnergyLevel,
     getMaxEnergyLevel,
 } from './energyMeter';
+import { setSpeedMultiplier } from './player';
 
 const JESUS_MODE_LENGTH = 2000;
 
 let timer = null;
 let interval = null;
 
+const expendEnergy = () => {
+    setEnergyLevel(Math.max(0, getEnergyLevel() - 1));
+};
+
+const submerge = () => {
+    setEnergyLevel(0);
+    setSpeedMultiplier(0.5);
+};
+
+const emerge = () => {
+    setEnergyLevel(getMaxEnergyLevel());
+    setSpeedMultiplier(1);
+};
+
 const startJesusMode = () => {
     interval = setInterval(() => {
-        setEnergyLevel(Math.max(0, getEnergyLevel() - 1));
+        expendEnergy();
     }, JESUS_MODE_LENGTH / getMaxEnergyLevel());
     timer = setTimeout(() => {
         clearInterval(interval);
-        setEnergyLevel(0);
+        submerge();
     }, JESUS_MODE_LENGTH);
 };
 
 const resetJesusMode = () => {
     clearTimeout(timer);
-    clearInterval(interval);
     timer = null;
+    clearInterval(interval);
     interval = null;
-    setEnergyLevel(getMaxEnergyLevel());
+    emerge();
 };
 
-export const create = (game, player, { ground, water }) => {
+export const create = (game, player, { ground, water, shoreline }) => {
     game.physics.add.collider(
         player,
         ground,
         () => {
-            if (getEnergyLevel() < getMaxEnergyLevel()) resetJesusMode();
+            if (getEnergyLevel() < getMaxEnergyLevel()) {
+                resetJesusMode();
+            }
         },
         null
     );
@@ -41,9 +58,11 @@ export const create = (game, player, { ground, water }) => {
         water,
         () => {
             if (player.body.velocity.x === 0 && getEnergyLevel() > 0) {
-                setEnergyLevel(0);
+                submerge();
             } else if (timer === null) startJesusMode();
         },
         () => getEnergyLevel() > 0
     );
+
+    game.physics.add.collider(player, shoreline);
 };

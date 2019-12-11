@@ -24,10 +24,14 @@ export function mountGame(el) {
                 player.preload(this);
             },
             create: function() {
-                const { ground, water } = level1.create(this);
+                const { ground, water, shoreline } = level1.create(this);
                 energyMeter.create(this);
                 const _player = player.create(this);
-                worldPhysics.create(this, _player, { ground, water });
+                worldPhysics.create(this, _player, {
+                    ground,
+                    water,
+                    shoreline,
+                });
                 this.cameras.main.startFollow(_player);
             },
             update: function() {

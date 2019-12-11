@@ -2,6 +2,8 @@ export const KEY = 'basilisk';
 import basiliskSprites from './assets/basilisk-sprites.png';
 
 let player;
+let SPEED = 400;
+let speedMultiplier = 1;
 
 export const animations = {
     LEFT: 'left',
@@ -40,10 +42,10 @@ export const update = game => {
     const cursors = game.input.keyboard.createCursorKeys();
 
     if (cursors.left.isDown) {
-        player.setVelocityX(-400);
+        player.setVelocityX(-1 * SPEED * speedMultiplier);
         player.anims.play(animations.LEFT, true);
     } else if (cursors.right.isDown) {
-        player.setVelocityX(400);
+        player.setVelocityX(1 * SPEED * speedMultiplier);
         player.anims.play(animations.RIGHT, true);
     } else if (player.body.blocked.down) {
         // stop all animations
@@ -59,6 +61,14 @@ export const update = game => {
     }
 
     if (cursors.up.isDown && player.body.blocked.down) {
-        player.setVelocityY(-400);
+        player.setVelocityY(-1 * Math.max(300, SPEED * speedMultiplier));
     }
+};
+
+export const getSpeedMultiplier = () => {
+    return speedMultiplier;
+};
+
+export const setSpeedMultiplier = multiplier => {
+    speedMultiplier = multiplier;
 };
