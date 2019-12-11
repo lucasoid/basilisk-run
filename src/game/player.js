@@ -2,6 +2,7 @@ import {
     getEnergyLevel,
     setEnergyLevel,
     getMaxEnergyLevel,
+    getDefaultEnergyLevel,
 } from './energyMeter';
 import basiliskSprites from './assets/basilisk-sprites.png';
 import * as levels from './levels';
@@ -18,9 +19,8 @@ export const animations = {
     RIGHT: 'right',
 };
 
-const JESUS_MODE_LENGTH = 2000;
+const JESUS_MODE_INT_LENGTH = 250; // length in ms to expend one unit of energy
 
-let timer = null;
 let interval = null;
 
 const expendEnergy = () => {
@@ -33,23 +33,20 @@ const submerge = () => {
 };
 
 const emerge = () => {
-    setEnergyLevel(getMaxEnergyLevel());
+    if (getEnergyLevel() < getDefaultEnergyLevel()) {
+        setEnergyLevel(getDefaultEnergyLevel());
+    }
     setSpeedMultiplier(1);
 };
 
 const startJesusMode = () => {
     interval = setInterval(() => {
         expendEnergy();
-    }, JESUS_MODE_LENGTH / getMaxEnergyLevel());
-    timer = setTimeout(() => {
-        clearInterval(interval);
-        submerge();
-    }, JESUS_MODE_LENGTH);
+        if (getEnergyLevel() <= 0) submerge();
+    }, JESUS_MODE_INT_LENGTH);
 };
 
 const resetJesusMode = () => {
-    clearTimeout(timer);
-    timer = null;
     clearInterval(interval);
     interval = null;
     emerge();
@@ -86,7 +83,7 @@ export const create = game => {
         player,
         levels.getGroundLayer(),
         () => {
-            if (getEnergyLevel() < getMaxEnergyLevel()) {
+            if (getEnergyLevel() < getDefaultEnergyLevel()) {
                 resetJesusMode();
             }
         },
@@ -98,7 +95,7 @@ export const create = game => {
         () => {
             if (player.body.velocity.x === 0 && getEnergyLevel() > 0) {
                 submerge();
-            } else if (timer === null) startJesusMode();
+            } else if (interval === null) startJesusMode();
         },
         () => getEnergyLevel() > 0
     );

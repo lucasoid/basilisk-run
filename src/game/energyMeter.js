@@ -9,9 +9,10 @@ const Y_OFFSET = 30;
 const BAR_WIDTH = 15;
 const BAR_HEIGHT = 30;
 const GUTTER = 3;
-const LEVELS = 8;
+const LEVELS = 24;
+const DEFAULT_LEVEL = 8;
 
-let energyLevel = LEVELS;
+let energyLevel = DEFAULT_LEVEL;
 
 const getPosition = i => {
     return {
@@ -29,6 +30,22 @@ let bars = {
     6: null,
     7: null,
     8: null,
+    9: null,
+    10: null,
+    11: null,
+    12: null,
+    13: null,
+    14: null,
+    15: null,
+    16: null,
+    17: null,
+    18: null,
+    19: null,
+    20: null,
+    21: null,
+    22: null,
+    23: null,
+    24: null,
 };
 
 export const preload = game => {
@@ -43,10 +60,15 @@ export const create = game => {
     for (let i = 1; i <= LEVELS; i++) {
         const { x, y } = getPosition(i);
         let emptyBar = game.add.image(x, y, 'energy0');
-        bars[i] = game.add.image(x, y, `energy${Math.ceil(i / 2)}`);
+        bars[i] = game.add.image(
+            x,
+            y,
+            `energy${Math.min(4, Math.ceil(i / 3))}`
+        );
         emptyBar.setScrollFactor(0);
         bars[i].setScrollFactor(0);
     }
+    setEnergyLevel(DEFAULT_LEVEL);
 };
 
 const updateMeter = energyLevel => {
@@ -68,6 +90,10 @@ export const setEnergyLevel = level => {
 
 export const getEnergyLevel = () => {
     return energyLevel;
+};
+
+export const getDefaultEnergyLevel = () => {
+    return DEFAULT_LEVEL;
 };
 
 export const getMaxEnergyLevel = () => {
