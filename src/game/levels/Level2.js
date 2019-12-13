@@ -1,13 +1,13 @@
 import { Level } from './Level';
-import level1Map from './tilemaps/Level1.json';
+import level2Map from './tilemaps/Level2.json';
 
 const GROUND_HEIGHT = 72;
 
-export class Level1 extends Level {
+export class Level2 extends Level {
     constructor(config) {
         super(config);
-        this.tilemapKey = 'level1Map';
-        this.tilemap = level1Map;
+        this.tilemapKey = 'level2Map';
+        this.tilemap = level2Map;
         this.lizardPosition = {
             x: 100,
             y: 960 - GROUND_HEIGHT - 100,
@@ -20,6 +20,6 @@ export class Level1 extends Level {
 
     onWinLevel = () => {
         this.scene.stop();
-        this.scene.start('StageComplete', { level: 1, transitionTo: 'Level2' });
+        this.scene.start('StageComplete', { level: 2, transitionTo: 'Level1' });
     };
 }

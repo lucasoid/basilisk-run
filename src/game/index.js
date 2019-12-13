@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
 import constants from './constants';
-import * as player from './player';
-import * as levels from './levels';
-import * as energyMeter from './energyMeter';
+import { Level1 } from './levels/Level1';
+import { Level2 } from './levels/Level2';
+import { StageComplete } from './levels/StageComplete';
 
 export function mountGame(el) {
-    return new Phaser.Game({
+    let game = new Phaser.Game({
         parent: el,
         type: Phaser.AUTO,
         width: constants.scene.WIDTH,
@@ -16,20 +16,18 @@ export function mountGame(el) {
                 gravity: { y: 500 },
             },
         },
-        scene: {
-            preload: function() {
-                levels.preload(this);
-                energyMeter.preload(this);
-                player.preload(this);
-            },
-            create: function() {
-                levels.create(this);
-                energyMeter.create(this);
-                player.create(this);
-            },
-            update: function() {
-                player.update(this);
-            },
-        },
     });
+
+    const level1 = new Level1({ active: true, visible: false });
+    const level2 = new Level2({ active: false, visible: false });
+    game.scene.add('Level1', level1);
+    game.scene.add(
+        'StageComplete',
+        new StageComplete({ active: false, visible: false })
+    );
+    game.scene.add('Level2', level2);
+
+    game.scene.start('Level1');
+
+    return game;
 }
