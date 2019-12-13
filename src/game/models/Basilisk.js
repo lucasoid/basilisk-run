@@ -13,12 +13,76 @@ export class Basilisk {
     static defaultSpeed = 1;
     static maxSpeed = 3;
     static jesusModeIntervalLength = 250;
+    scene = null;
     sprite = null;
+    startX = 0;
+    startY = 0;
     energy = Basilisk.defaultEnergy;
     speed = Basilisk.defaultSpeed;
     energyCallbacks = [];
     speedCallbacks = [];
     jesusModeInterval = null;
+
+    constructor(scene) {
+        this.scene = scene;
+    }
+
+    preload = () => {
+        if (!this.scene.textures.exists(Basilisk.handle)) {
+            this.scene.load.spritesheet(Basilisk.handle, basiliskSprites, {
+                frameWidth: 250,
+                frameHeight: 137.33,
+            });
+        }
+    };
+
+    create = () => {
+        this.sprite = this.scene.physics.add.sprite(
+            this.startX,
+            this.startY,
+            Basilisk.handle
+        );
+        this.sprite.setBounce(0.1);
+        this.sprite.setCollideWorldBounds(true);
+        this.createAnimations();
+        this.scene.cameras.main.startFollow(this.sprite);
+    };
+
+    update = () => {
+        const cursors = this.scene.input.keyboard.createCursorKeys();
+        if (cursors.left.isDown) {
+            this.runLeft();
+        } else if (cursors.right.isDown) {
+            this.runRight();
+        } else if (this.sprite.body.blocked.down) {
+            this.rest();
+        }
+        if (cursors.up.isDown && this.sprite.body.blocked.down) {
+            this.jump();
+        }
+    };
+
+    createAnimations = () => {
+        this.scene.anims.create({
+            key: 'runLeft',
+            // frames are 0-index
+            frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
+                start: 11,
+                end: 8,
+            }),
+            frameRate: 10,
+            repeat: -1,
+        });
+        this.scene.anims.create({
+            key: 'runRight',
+            frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
+                start: 4,
+                end: 7,
+            }),
+            frameRate: 10,
+            repeat: -1,
+        });
+    };
 
     onUpdateEnergy = cb => {
         if (typeof cb !== 'function')
@@ -95,82 +159,5 @@ export class Basilisk {
         }
         // stop moving
         this.sprite.setVelocityX(0);
-    };
-
-    preload = game => {
-        if (!game.textures.exists(Basilisk.handle))
-            game.load.spritesheet(Basilisk.handle, basiliskSprites, {
-                frameWidth: 250,
-                frameHeight: 137.33,
-            });
-    };
-
-    create = (game, { ground, water, shore, goal }, lizardPosition) => {
-        this.sprite = game.physics.add.sprite(
-            lizardPosition.x,
-            lizardPosition.y,
-            Basilisk.handle
-        );
-        this.sprite.setBounce(0.1);
-        this.sprite.setCollideWorldBounds(true);
-        game.anims.create({
-            key: 'runLeft',
-            // frames are 0-index
-            frames: game.anims.generateFrameNumbers(Basilisk.handle, {
-                start: 11,
-                end: 8,
-            }),
-            frameRate: 10,
-            repeat: -1,
-        });
-        game.anims.create({
-            key: 'runRight',
-            frames: game.anims.generateFrameNumbers(Basilisk.handle, {
-                start: 4,
-                end: 7,
-            }),
-            frameRate: 10,
-            repeat: -1,
-        });
-        game.cameras.main.startFollow(this.sprite);
-        // sink or swim logic:
-        game.physics.add.collider(
-            this.sprite,
-            ground,
-            () => {
-                if (this.energy < Basilisk.defaultEnergy) {
-                    this.emerge();
-                }
-            },
-            null
-        );
-        game.physics.add.collider(
-            this.sprite,
-            water,
-            () => {
-                if (this.sprite.body.velocity.x === 0 && this.energy > 0) {
-                    this.submerge();
-                } else if (this.jesusModeInterval === null)
-                    this.startJesusMode();
-            },
-            () => this.energy > 0
-        );
-        game.physics.add.collider(this.sprite, shore);
-    };
-
-    update = game => {
-        const cursors = game.input.keyboard.createCursorKeys();
-
-        if (cursors.left.isDown) {
-            this.runLeft();
-        } else if (cursors.right.isDown) {
-            this.runRight();
-        } else if (this.sprite.body.blocked.down) {
-            this.rest();
-        }
-
-        if (cursors.up.isDown && this.sprite.body.blocked.down) {
-            this.jump();
-        }
     };
 }
