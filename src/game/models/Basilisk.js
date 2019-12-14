@@ -96,6 +96,10 @@ export class Basilisk {
         this.speedCallbacks.push(cb);
     };
 
+    changeEnergy = (delta = 0) => {
+        this.setEnergy(this.energy + delta);
+    };
+
     setEnergy = level => {
         const prev = this.energy;
         const next = Math.min(Basilisk.maxEnergy, Math.max(level, 0));
@@ -126,7 +130,7 @@ export class Basilisk {
 
     startJesusMode = () => {
         this.jesusModeInterval = setInterval(() => {
-            if (this.energyLevel === 0) {
+            if (this.energy === 0) {
                 this.submerge();
             } else {
                 this.setEnergy(Math.max(0, this.energy - 1));

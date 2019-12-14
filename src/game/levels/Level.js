@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import constants from '../constants';
 import { Basilisk } from '../models/Basilisk';
 import { EnergyMeter } from '../models/EnergyMeter';
+import { Beetle } from '../models/Beetle';
 import tileset from '../assets/tileset.png';
 import skyImg from '../assets/sky-day.png';
 import eggImg from '../assets/egg.png';
@@ -16,6 +17,7 @@ export class Level extends Scene {
     background;
     tilemapKey;
     tilemap;
+    prey = [];
 
     constructor(config) {
         super(config);
@@ -31,6 +33,7 @@ export class Level extends Scene {
             this.load.tilemapTiledJSON(this.tilemapKey, this.tilemap);
         this.basilisk.preload();
         this.energyMeter.preload();
+        Beetle.preload(this);
     };
 
     create = () => {
@@ -45,11 +48,12 @@ export class Level extends Scene {
         this.energyMeter.create();
         this.createTarget();
         this.sinkOrSwim();
-        this.physics.add.collider(this.basilisk.sprite, this.shore);
+        this.createPrey();
     };
 
     update = () => {
         this.basilisk.update();
+        this.prey.forEach(prey => prey.update());
     };
 
     createBackground = () => {
@@ -97,6 +101,10 @@ export class Level extends Scene {
             this.basilisk.sprite,
             this.ground,
             () => {
+                if (this.basilisk.jesusModeInterval !== null) {
+                    clearInterval(this.basilisk.jesusModeInterval);
+                    this.basilisk.jesusModeInterval = null;
+                }
                 if (this.basilisk.energy < Basilisk.defaultEnergy) {
                     this.basilisk.emerge();
                 }
@@ -117,6 +125,7 @@ export class Level extends Scene {
             },
             () => this.basilisk.energy > 0
         );
+        this.physics.add.collider(this.basilisk.sprite, this.shore);
     };
 
     createTarget = () => {
@@ -130,5 +139,48 @@ export class Level extends Scene {
         this.physics.add.overlap(this.basilisk.sprite, this.egg, () => {
             this.onWinLevel();
         });
+    };
+
+    // abstract
+    createPrey = () => {};
+
+    spawnBeetle = (x, y, onDestroy = () => {}) => {
+        const beetle = new Beetle(this, this.basilisk);
+        beetle.startX = x;
+        beetle.startY = y;
+        beetle.create();
+        this.prey.push(beetle);
+        this.physics.add.collider(this.ground, beetle.sprite);
+        this.physics.add.collider(this.shore, beetle.sprite);
+        this.physics.add.collider(this.water, beetle.sprite);
+        this.physics.add.collider(
+            this.basilisk.sprite,
+            beetle.sprite,
+            () => {
+                beetle.sprite.destroy();
+                onDestroy();
+                this.basilisk.changeEnergy(3);
+            },
+            () => {
+                if (this.basilisk.sprite.body.velocity.x === 0) return false;
+                // cuz you don't eat with your tail
+                if (
+                    this.basilisk.sprite.body.velocity.x < 0 &&
+                    beetle.sprite.x <
+                        this.basilisk.sprite.x -
+                            this.basilisk.sprite.displayWidth / 2
+                )
+                    return true;
+                if (
+                    this.basilisk.sprite.body.velocity.x > 0 &&
+                    beetle.sprite.x >
+                        this.basilisk.sprite.x +
+                            this.basilisk.sprite.displayWidth / 2
+                )
+                    return true;
+                return false;
+            }
+        );
+        return beetle;
     };
 }

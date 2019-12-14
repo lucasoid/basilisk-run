@@ -16,6 +16,10 @@ export class Level2 extends Level {
         };
     }
 
+    createPrey = () => {
+        this.spawnBeetle(300, 960 - GROUND_HEIGHT - 10);
+    };
+
     onWinLevel = () => {
         this.scene.stop();
         this.scene.start('StageComplete', { level: 2, transitionTo: 'Level1' });
