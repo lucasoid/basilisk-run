@@ -104,11 +104,10 @@ export class Level extends Scene {
             this.basilisk.sprite,
             this.ground,
             () => {
-                if (this.basilisk.jesusModeInterval !== null) {
-                    clearInterval(this.basilisk.jesusModeInterval);
-                    this.basilisk.jesusModeInterval = null;
-                }
-                if (this.basilisk.energy < Basilisk.defaultEnergy) {
+                if (
+                    this.basilisk.jesusModeStatus !==
+                    Basilisk.JESUS_MODE_STATUSES.INACTIVE
+                ) {
                     this.basilisk.emerge();
                 }
             },
@@ -123,8 +122,12 @@ export class Level extends Scene {
                     this.basilisk.energy > 0
                 ) {
                     this.basilisk.submerge();
-                } else if (this.basilisk.jesusModeInterval === null)
+                } else if (
+                    this.basilisk.jesusModeStatus !==
+                    Basilisk.JESUS_MODE_STATUSES.ACTIVE
+                ) {
                     this.basilisk.startJesusMode();
+                }
             },
             () => this.basilisk.energy > 0
         );

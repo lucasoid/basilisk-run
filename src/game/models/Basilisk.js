@@ -13,6 +13,11 @@ export class Basilisk {
     static defaultSpeed = 1;
     static maxSpeed = 3;
     static jesusModeIntervalLength = 250;
+    static JESUS_MODE_STATUSES = {
+        ACTIVE: 'active',
+        INACTIVE: 'inactive',
+        SUBMERGED: 'submerged',
+    };
     scene = null;
     sprite = null;
     startX = 0;
@@ -22,6 +27,7 @@ export class Basilisk {
     energyCallbacks = [];
     speedCallbacks = [];
     jesusModeInterval = null;
+    jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.INACTIVE;
 
     constructor(scene) {
         this.scene = scene;
@@ -117,6 +123,7 @@ export class Basilisk {
     submerge() {
         clearInterval(this.jesusModeInterval);
         this.jesusModeInterval = null;
+        this.jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.SUBMERGED;
         this.setEnergy(0);
         this.setSpeed(0.5);
     }
@@ -124,11 +131,15 @@ export class Basilisk {
     emerge() {
         clearInterval(this.jesusModeInterval);
         this.jesusModeInterval = null;
-        this.setEnergy(Basilisk.defaultEnergy);
-        this.setSpeed(Basilisk.defaultSpeed);
+        this.jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.INACTIVE;
+        if (this.energy <= Basilisk.defaultEnergy)
+            this.setEnergy(Basilisk.defaultEnergy);
+        if (this.speed <= Basilisk.defaultSpeed)
+            this.setSpeed(Basilisk.defaultSpeed);
     }
 
     startJesusMode = () => {
+        this.jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.ACTIVE;
         this.jesusModeInterval = setInterval(() => {
             if (this.energy === 0) {
                 this.submerge();
