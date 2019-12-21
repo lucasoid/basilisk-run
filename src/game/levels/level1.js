@@ -1,7 +1,7 @@
 import { Level } from './Level';
 import level1Map from './tilemaps/Level1.json';
 
-const GROUND_HEIGHT = 72;
+const GROUND_HEIGHT = 48;
 
 export class Level1 extends Level {
     constructor(config) {
