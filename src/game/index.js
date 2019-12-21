@@ -8,8 +8,8 @@ export function mountGame(el) {
     let game = new Phaser.Game({
         parent: el,
         type: Phaser.AUTO,
-        width: constants.scene.WIDTH,
-        height: constants.scene.HEIGHT,
+        width: constants.screen.WIDTH,
+        height: constants.screen.HEIGHT,
         physics: {
             default: 'arcade',
             arcade: {

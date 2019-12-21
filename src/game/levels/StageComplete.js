@@ -14,8 +14,8 @@ export class StageComplete extends Scene {
     create = () => {
         const textWidth = 300;
         const text = this.add.text(
-            constants.scene.WIDTH / 2 - textWidth / 2,
-            constants.scene.HEIGHT / 2,
+            constants.screen.WIDTH / 2 - textWidth / 2,
+            constants.screen.HEIGHT / 2,
             `Level ${this.level} complete!`,
             {
                 fontSize: '30px',
@@ -27,8 +27,8 @@ export class StageComplete extends Scene {
 
         // lizard spin
         let basiliskSprite = this.physics.add.sprite(
-            constants.scene.WIDTH / 2,
-            constants.scene.HEIGHT / 2,
+            constants.screen.WIDTH / 2,
+            constants.screen.HEIGHT / 2,
             Basilisk.handle
         );
         let i = 0;

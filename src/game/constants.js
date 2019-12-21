@@ -1,5 +1,5 @@
 export default {
-    scene: {
+    screen: {
         WIDTH: 800,
         HEIGHT: 480,
     },

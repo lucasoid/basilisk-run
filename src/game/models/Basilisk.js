@@ -5,8 +5,8 @@ const SPEED = 400;
 export class Basilisk {
     static handle = 'basilisk';
     static animations = {
-        runLeft: 'runLeft',
-        runRight: 'runRight',
+        runLeft: 'basilisk/runLeft',
+        runRight: 'basilisk/runRight',
     };
     static defaultEnergy = 8;
     static maxEnergy = 24;
@@ -64,7 +64,7 @@ export class Basilisk {
 
     createAnimations = () => {
         this.scene.anims.create({
-            key: 'runLeft',
+            key: Basilisk.animations.runLeft,
             // frames are 0-index
             frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
                 start: 11,
@@ -74,7 +74,7 @@ export class Basilisk {
             repeat: -1,
         });
         this.scene.anims.create({
-            key: 'runRight',
+            key: Basilisk.animations.runRight,
             frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
                 start: 4,
                 end: 7,

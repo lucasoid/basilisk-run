@@ -3,7 +3,7 @@ import constants from '../constants';
 import { Basilisk } from '../models/Basilisk';
 import { EnergyMeter } from '../models/EnergyMeter';
 import { Beetle } from '../models/Beetle';
-import tileset from '../assets/tileset.png';
+import tileset from '../assets/tiles.png';
 import skyImg from '../assets/sky-day.png';
 import eggImg from '../assets/egg.png';
 
@@ -39,12 +39,15 @@ export class Level extends Scene {
     create = () => {
         this.createBackground();
         const map = this.make.tilemap({ key: this.tilemapKey });
-        const tileset = map.addTilesetImage('base', 'tiles');
+        const tileset = map.addTilesetImage('tiles', 'tiles');
+        map.createStaticLayer('Undercoat', tileset, 0, 0);
         this.createGround(tileset, map);
         this.createWater(tileset, map);
         this.createShore(tileset, map);
+        map.createStaticLayer('Topcoat', tileset, 0, 0);
         this.createBounds(map);
         this.basilisk.create();
+        map.createStaticLayer('WaterEffect', tileset, 0, 0);
         this.energyMeter.create();
         this.createTarget();
         this.sinkOrSwim();
@@ -58,8 +61,8 @@ export class Level extends Scene {
 
     createBackground = () => {
         const background = this.add.image(
-            constants.scene.WIDTH / 2,
-            constants.scene.HEIGHT / 2,
+            constants.screen.WIDTH / 2,
+            constants.screen.HEIGHT / 2,
             'sky'
         );
         background.setScrollFactor(0);
@@ -76,7 +79,7 @@ export class Level extends Scene {
     };
 
     createShore = (tileset, map) => {
-        this.shore = map.createStaticLayer('Shoreline', tileset, 0, 0);
+        this.shore = map.createStaticLayer('Shore', tileset, 0, 0);
         this.shore.setCollisionByProperty({ collides: true });
     };
 
