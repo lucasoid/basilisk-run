@@ -18,6 +18,10 @@ export class Basilisk {
         INACTIVE: 'inactive',
         SUBMERGED: 'submerged',
     };
+    static DIRECTION = {
+        LEFT: 'left',
+        RIGHT: 'right',
+    };
     scene = null;
     sprite = null;
     startX = 0;
@@ -28,6 +32,7 @@ export class Basilisk {
     speedCallbacks = [];
     jesusModeInterval = null;
     jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.INACTIVE;
+    direction = Basilisk.DIRECTION.LEFT;
 
     constructor(scene) {
         this.scene = scene;
@@ -48,6 +53,8 @@ export class Basilisk {
             this.startY,
             Basilisk.handle
         );
+        this.sprite.body.setSize(125, 137.33, false);
+        this.sprite.body.setOffset(125, 0);
         this.sprite.setBounce(0.1);
         this.sprite.setCollideWorldBounds(true);
         this.createAnimations();
@@ -152,11 +159,15 @@ export class Basilisk {
     runLeft = () => {
         this.sprite.setVelocityX(-1 * SPEED * this.speed);
         this.sprite.anims.play(Basilisk.animations.runLeft, true);
+        this.direction = Basilisk.DIRECTION.LEFT;
+        this.sprite.body.setOffset(0, 0);
     };
 
     runRight = () => {
         this.sprite.setVelocityX(1 * SPEED * this.speed);
         this.sprite.anims.play(Basilisk.animations.runRight, true);
+        this.direction = Basilisk.DIRECTION.RIGHT;
+        this.sprite.body.setOffset(125, 0);
     };
 
     jump = () => {
@@ -169,8 +180,12 @@ export class Basilisk {
         // set the resting frame to either left or right
         if (this.sprite.body.velocity.x < 0) {
             this.sprite.setFrame(1);
+            this.direction = Basilisk.DIRECTION.LEFT;
+            this.sprite.body.setOffset(0, 0);
         } else if (this.sprite.body.velocity.x > 0) {
             this.sprite.setFrame(0);
+            this.direction = Basilisk.DIRECTION.RIGHT;
+            this.sprite.body.setOffset(125, 0);
         }
         // stop moving
         this.sprite.setVelocityX(0);

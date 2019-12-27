@@ -13,6 +13,7 @@ export function mountGame(el) {
         physics: {
             default: 'arcade',
             arcade: {
+                // debug: true,
                 gravity: { y: 500 },
             },
         },

@@ -172,16 +172,12 @@ export class Level extends Scene {
                 // cuz you don't eat with your tail
                 if (
                     this.basilisk.sprite.body.velocity.x < 0 &&
-                    beetle.sprite.x <
-                        this.basilisk.sprite.x -
-                            this.basilisk.sprite.displayWidth / 2
+                    beetle.sprite.x < this.basilisk.sprite.x
                 )
                     return true;
                 if (
                     this.basilisk.sprite.body.velocity.x > 0 &&
-                    beetle.sprite.x >
-                        this.basilisk.sprite.x +
-                            this.basilisk.sprite.displayWidth / 2
+                    beetle.sprite.x > this.basilisk.sprite.x
                 )
                     return true;
                 return false;
