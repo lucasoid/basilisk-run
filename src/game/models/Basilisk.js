@@ -80,9 +80,9 @@ export class Basilisk {
 
         if (this.jesusModeStatus === Basilisk.JESUS_MODE_STATUSES.SUBMERGED) {
             if (cursors.left.isDown) {
-                this.runLeft();
+                this.swimLeft();
             } else if (cursors.right.isDown) {
-                this.runRight();
+                this.swimRight();
             } else if (this.sprite.body.blocked.down) {
                 this.float();
             }
@@ -255,6 +255,18 @@ export class Basilisk {
     runRight = () => {
         this.sprite.setVelocityX(1 * SPEED * this.speed);
         this.sprite.anims.play(Basilisk.animations.runRight, true);
+        this.setDirection(true);
+    };
+
+    swimLeft = () => {
+        this.sprite.setVelocityX(-1 * SPEED * this.speed);
+        this.sprite.anims.play(Basilisk.animations.swimLeft, true);
+        this.setDirection(false);
+    };
+
+    swimRight = () => {
+        this.sprite.setVelocityX(1 * SPEED * this.speed);
+        this.sprite.anims.play(Basilisk.animations.swimRight, true);
         this.setDirection(true);
     };
 
