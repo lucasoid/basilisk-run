@@ -8,7 +8,7 @@ export class Level1 extends Level {
         super(config);
         this.tilemapKey = 'level1Map';
         this.tilemap = level1Map;
-        this.basilisk.startX = 100;
+        this.basilisk.startX = 200;
         this.basilisk.startY = 960 - GROUND_HEIGHT - 100;
         this.targetPosition = {
             x: 6720 - 100,

@@ -1,4 +1,4 @@
-import basiliskSprites from '../assets/basilisk-sprites.png';
+import basiliskSprites from '../assets/basilisk.png';
 
 const SPEED = 400;
 
@@ -7,7 +7,16 @@ export class Basilisk {
     static animations = {
         runLeft: 'basilisk/runLeft',
         runRight: 'basilisk/runRight',
+        restLeft: 'basilisk/restLeft',
+        restRight: 'basilisk/restRight',
+        jumpLeft: 'basilisk/jumpLeft',
+        jumpRight: 'basilisk/jumpRight',
+        swimLeft: 'basilisk/swimLeft',
+        swimRight: 'basilisk/swimRight',
     };
+    static length = 320;
+    static collideLength = 200;
+    static height = 120;
     static defaultEnergy = 8;
     static maxEnergy = 24;
     static defaultSpeed = 1;
@@ -41,8 +50,8 @@ export class Basilisk {
     preload = () => {
         if (!this.scene.textures.exists(Basilisk.handle)) {
             this.scene.load.spritesheet(Basilisk.handle, basiliskSprites, {
-                frameWidth: 250,
-                frameHeight: 137.33,
+                frameWidth: Basilisk.length,
+                frameHeight: Basilisk.height,
             });
         }
     };
@@ -53,11 +62,16 @@ export class Basilisk {
             this.startY,
             Basilisk.handle
         );
-        this.sprite.body.setSize(125, 137.33, false);
-        this.sprite.body.setOffset(125, 0);
+        this.sprite.body.setSize(
+            Basilisk.collideLength,
+            Basilisk.height,
+            false
+        );
+        this.sprite.body.setOffset(Basilisk.length - Basilisk.collideLength, 0);
         this.sprite.setBounce(0.1);
         this.sprite.setCollideWorldBounds(true);
         this.createAnimations();
+        this.sprite.anims.play(Basilisk.animations.restRight, true);
         this.scene.cameras.main.startFollow(this.sprite);
     };
 
@@ -80,20 +94,82 @@ export class Basilisk {
             key: Basilisk.animations.runLeft,
             // frames are 0-index
             frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
-                start: 11,
+                start: 15,
                 end: 8,
             }),
-            frameRate: 10,
+            frameRate: 16,
             repeat: -1,
         });
         this.scene.anims.create({
             key: Basilisk.animations.runRight,
             frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
-                start: 4,
+                start: 0,
                 end: 7,
+            }),
+            frameRate: 16,
+            repeat: -1,
+        });
+        this.scene.anims.create({
+            key: Basilisk.animations.restLeft,
+            frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
+                start: 21,
+                end: 19,
+            }),
+            frameRate: 10,
+            yoyo: true,
+            repeat: -1,
+            delay: 1500,
+            repeatDelay: 1500,
+        });
+        this.scene.anims.create({
+            key: Basilisk.animations.restRight,
+            frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
+                start: 16,
+                end: 18,
+            }),
+            frameRate: 10,
+            yoyo: true,
+            repeat: -1,
+            delay: 1500,
+            repeatDelay: 1500,
+        });
+        this.scene.anims.create({
+            key: Basilisk.animations.jumpLeft,
+            frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
+                start: 27,
+                end: 25,
+            }),
+            frameRate: 16,
+        });
+        this.scene.anims.create({
+            key: Basilisk.animations.jumpRight,
+            frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
+                start: 22,
+                end: 24,
+            }),
+            frameRate: 16,
+        });
+        this.scene.anims.create({
+            key: Basilisk.animations.swimLeft,
+            frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
+                start: 35,
+                end: 32,
             }),
             frameRate: 10,
             repeat: -1,
+            yoyo: true,
+            repeatDelay: 200,
+        });
+        this.scene.anims.create({
+            key: Basilisk.animations.swimRight,
+            frames: this.scene.anims.generateFrameNumbers(Basilisk.handle, {
+                start: 28,
+                end: 31,
+            }),
+            frameRate: 10,
+            repeat: -1,
+            yoyo: true,
+            repeatDelay: 200,
         });
     };
 
@@ -174,18 +250,26 @@ export class Basilisk {
         this.sprite.setVelocityY(-1 * Math.max(300, SPEED * this.speed));
     };
 
+    /**
+     * @param {Boolean} isRight - true if the lizard should face right
+     */
+    setDirection = isRight => {
+        this.direction = isRight
+            ? Basilisk.DIRECTION.RIGHT
+            : Basilisk.DIRECTION.LEFT;
+        this.sprite.body.setOffset(
+            isRight ? Basilisk.length - Basilisk.collideLength : 0,
+            0
+        );
+    };
+
     rest = () => {
-        // stop all animations
-        this.sprite.anims.stop(null);
-        // set the resting frame to either left or right
         if (this.sprite.body.velocity.x < 0) {
-            this.sprite.setFrame(1);
-            this.direction = Basilisk.DIRECTION.LEFT;
-            this.sprite.body.setOffset(0, 0);
+            this.sprite.anims.play(Basilisk.animations.restLeft, true);
+            this.setDirection(false);
         } else if (this.sprite.body.velocity.x > 0) {
-            this.sprite.setFrame(0);
-            this.direction = Basilisk.DIRECTION.RIGHT;
-            this.sprite.body.setOffset(125, 0);
+            this.sprite.anims.play(Basilisk.animations.restRight, true);
+            this.setDirection(true);
         }
         // stop moving
         this.sprite.setVelocityX(0);
