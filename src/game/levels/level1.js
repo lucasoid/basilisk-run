@@ -37,6 +37,22 @@ export class Level1 extends Level {
         setRespawningBeetle(5500, beetleHeight, '_8');
         setRespawningBeetle(5500, beetleHeight, '_9');
         setRespawningBeetle(5500, beetleHeight, '_10');
+
+        const butterflyHeight = 960 - GROUND_HEIGHT - 40;
+        let butterflies = {};
+        const setRespawningButterfly = (x, y, i) => {
+            butterflies[i] = this.spawnButterfly(x, y, () => {
+                delete butterflies[i];
+                setTimeout(() => {
+                    butterflies[i] = setRespawningButterfly(x, y, i);
+                }, 3000);
+            });
+        };
+        setRespawningButterfly(500, butterflyHeight, '_1');
+        setRespawningButterfly(1900, butterflyHeight, '_3');
+        setRespawningButterfly(3300, butterflyHeight, '_5');
+        setRespawningButterfly(4900, butterflyHeight, '_7');
+        setRespawningButterfly(5600, butterflyHeight, '_9');
     };
 
     onWinLevel = () => {

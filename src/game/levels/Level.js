@@ -3,6 +3,7 @@ import constants from '../constants';
 import { Basilisk } from '../models/Basilisk';
 import { EnergyMeter } from '../models/EnergyMeter';
 import { Beetle } from '../models/Beetle';
+import { Butterfly } from '../models/Butterfly';
 import tileset from '../assets/tiles.png';
 import skyImg from '../assets/sky-day.png';
 import eggImg from '../assets/egg.png';
@@ -34,6 +35,7 @@ export class Level extends Scene {
         this.basilisk.preload();
         this.energyMeter.preload();
         Beetle.preload(this);
+        Butterfly.preload(this);
     };
 
     create = () => {
@@ -184,5 +186,28 @@ export class Level extends Scene {
             }
         );
         return beetle;
+    };
+
+    spawnButterfly = (x, y, onDestroy = () => {}) => {
+        const butterfly = new Butterfly(this, this.basilisk);
+        butterfly.startX = x;
+        butterfly.startY = y;
+        butterfly.create();
+        this.prey.push(butterfly);
+        butterfly.startFluttering();
+        this.physics.add.collider(this.ground, butterfly.sprite);
+        this.physics.add.collider(this.shore, butterfly.sprite);
+        this.physics.add.collider(this.water, butterfly.sprite);
+        this.physics.add.collider(
+            this.basilisk.sprite,
+            butterfly.sprite,
+            () => {
+                butterfly.sprite.destroy();
+                onDestroy();
+                this.basilisk.changeEnergy(3);
+            },
+            null
+        );
+        return butterfly;
     };
 }
