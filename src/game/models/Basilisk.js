@@ -248,30 +248,47 @@ export class Basilisk {
 
     runLeft = () => {
         this.sprite.setVelocityX(-1 * SPEED * this.speed);
-        this.sprite.anims.play(Basilisk.animations.runLeft, true);
+        if (this.sprite.body.blocked.down) {
+            this.sprite.anims.play(Basilisk.animations.runLeft, true);
+        } else {
+            this.sprite.setFrame(25);
+        }
         this.setDirection(false);
     };
 
     runRight = () => {
         this.sprite.setVelocityX(1 * SPEED * this.speed);
-        this.sprite.anims.play(Basilisk.animations.runRight, true);
+        if (this.sprite.body.blocked.down) {
+            this.sprite.anims.play(Basilisk.animations.runRight, true);
+        } else {
+            this.sprite.setFrame(24);
+        }
         this.setDirection(true);
     };
 
     swimLeft = () => {
         this.sprite.setVelocityX(-1 * SPEED * this.speed);
-        this.sprite.anims.play(Basilisk.animations.swimLeft, true);
+        if (this.sprite.body.blocked.down) {
+            this.sprite.anims.play(Basilisk.animations.swimLeft, true);
+        }
         this.setDirection(false);
     };
 
     swimRight = () => {
         this.sprite.setVelocityX(1 * SPEED * this.speed);
-        this.sprite.anims.play(Basilisk.animations.swimRight, true);
+        if (this.sprite.body.blocked.down) {
+            this.sprite.anims.play(Basilisk.animations.swimRight, true);
+        }
         this.setDirection(true);
     };
 
     jump = () => {
         this.sprite.setVelocityY(-1 * Math.max(300, SPEED * this.speed));
+        if (this.direction === Basilisk.DIRECTION.LEFT) {
+            this.sprite.anims.play(Basilisk.animations.jumpLeft, true);
+        } else {
+            this.sprite.anims.play(Basilisk.animations.jumpRight, true);
+        }
     };
 
     /**
@@ -295,6 +312,14 @@ export class Basilisk {
         } else if (this.sprite.body.velocity.x > 0) {
             this.sprite.anims.play(Basilisk.animations.restRight, true);
             this.setDirection(true);
+        }
+        if (this.sprite.body.velocity.x === 0) {
+            this.sprite.anims.play(
+                this.direction === Basilisk.DIRECTION.LEFT
+                    ? Basilisk.animations.restLeft
+                    : Basilisk.animations.restRight,
+                true
+            );
         }
         // stop moving
         this.sprite.setVelocityX(0);
