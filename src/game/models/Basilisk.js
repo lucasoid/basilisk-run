@@ -67,7 +67,7 @@ export class Basilisk {
             Basilisk.height,
             false
         );
-        this.sprite.body.setOffset(Basilisk.length - Basilisk.collideLength, 0);
+        this.setDirection(true);
         this.sprite.setBounce(0.1);
         this.sprite.setCollideWorldBounds(true);
         this.createAnimations();
@@ -249,15 +249,13 @@ export class Basilisk {
     runLeft = () => {
         this.sprite.setVelocityX(-1 * SPEED * this.speed);
         this.sprite.anims.play(Basilisk.animations.runLeft, true);
-        this.direction = Basilisk.DIRECTION.LEFT;
-        this.sprite.body.setOffset(0, 0);
+        this.setDirection(false);
     };
 
     runRight = () => {
         this.sprite.setVelocityX(1 * SPEED * this.speed);
         this.sprite.anims.play(Basilisk.animations.runRight, true);
-        this.direction = Basilisk.DIRECTION.RIGHT;
-        this.sprite.body.setOffset(125, 0);
+        this.setDirection(true);
     };
 
     jump = () => {
@@ -268,6 +266,7 @@ export class Basilisk {
      * @param {Boolean} isRight - true if the lizard should face right
      */
     setDirection = isRight => {
+        if ((this.direction === Basilisk.DIRECTION.RIGHT) === isRight) return;
         this.direction = isRight
             ? Basilisk.DIRECTION.RIGHT
             : Basilisk.DIRECTION.LEFT;
