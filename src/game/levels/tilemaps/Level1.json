@@ -16017,7 +16017,7 @@
             "name": "Undercoat",
             "opacity": 1,
             "type": "tilelayer",
-            "visible": false,
+            "visible": true,
             "width": 400,
             "x": 0,
             "y": 0
@@ -31216,14 +31216,14 @@
                 2,
                 1,
                 2,
+                0,
+                0,
+                0,
+                0,
                 1,
                 2,
                 1,
                 2,
-                1,
-                2,
-                1,
-                2,
                 5,
                 5,
                 5,
@@ -31477,9 +31477,9 @@
                 0,
                 0,
                 0,
-                5,
-                5,
-                5,
+                0,
+                0,
+                0,
                 0,
                 0,
                 0,
@@ -31616,6 +31616,10 @@
                 5,
                 5,
                 5,
+                17,
+                18,
+                19,
+                20,
                 5,
                 5,
                 5,
@@ -31650,10 +31654,6 @@
                 5,
                 5,
                 5,
-                5,
-                5,
-                5,
-                5,
                 0,
                 0,
                 0,
@@ -31877,7 +31877,7 @@
                 0,
                 0,
                 0,
-                5,
+                0,
                 0,
                 0,
                 0,
@@ -32030,7 +32030,7 @@
             "name": "Ground",
             "opacity": 1,
             "type": "tilelayer",
-            "visible": false,
+            "visible": true,
             "width": 400,
             "x": 0,
             "y": 0
@@ -48043,7 +48043,7 @@
             "name": "Shore",
             "opacity": 1,
             "type": "tilelayer",
-            "visible": false,
+            "visible": true,
             "width": 400,
             "x": 0,
             "y": 0
@@ -64056,7 +64056,7 @@
             "name": "Water",
             "opacity": 1,
             "type": "tilelayer",
-            "visible": false,
+            "visible": true,
             "width": 400,
             "x": 0,
             "y": 0
@@ -80069,7 +80069,7 @@
             "name": "Topcoat",
             "opacity": 1,
             "type": "tilelayer",
-            "visible": false,
+            "visible": true,
             "width": 400,
             "x": 0,
             "y": 0
@@ -96099,12 +96099,12 @@
             "columns": 4,
             "firstgid": 1,
             "image": "../../assets/tiles.png",
-            "imageheight": 96,
+            "imageheight": 120,
             "imagewidth": 96,
             "margin": 0,
             "name": "tiles",
             "spacing": 0,
-            "tilecount": 16,
+            "tilecount": 20,
             "tileheight": 24,
             "tiles": [
                 {
@@ -96186,20 +96186,30 @@
                             "value": false
                         }
                     ]
+                },
+                {
+                    "id": 16,
+                    "properties": [
+                        {
+                            "name": "collides",
+                            "type": "bool",
+                            "value": false
+                        }
+                    ]
                 }
             ],
             "tilewidth": 24
         },
         {
             "columns": 4,
-            "firstgid": 17,
+            "firstgid": 21,
             "image": "../../assets/tiles.png",
-            "imageheight": 96,
+            "imageheight": 120,
             "imagewidth": 96,
             "margin": 0,
             "name": "tiles",
             "spacing": 0,
-            "tilecount": 16,
+            "tilecount": 20,
             "tileheight": 24,
             "tiles": [
                 {

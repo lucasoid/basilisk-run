@@ -11,8 +11,8 @@ export class Level1 extends Level {
         this.basilisk.startX = 200;
         this.basilisk.startY = 960 - GROUND_HEIGHT - 100;
         this.targetPosition = {
-            x: 6720 - 100,
-            y: 960 - GROUND_HEIGHT - 100,
+            x: 9600 - 144,
+            y: 960 - GROUND_HEIGHT - 10,
         };
     }
 

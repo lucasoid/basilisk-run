@@ -14,7 +14,7 @@ export class Level extends Scene {
     ground;
     water;
     shore;
-    egg;
+    target;
     background;
     tilemapKey;
     tilemap;
@@ -43,6 +43,7 @@ export class Level extends Scene {
         const map = this.make.tilemap({ key: this.tilemapKey });
         const tileset = map.addTilesetImage('tiles', 'tiles');
         map.createStaticLayer('Undercoat', tileset, 0, 0);
+        this.createTarget();
         this.createGround(tileset, map);
         this.createWater(tileset, map);
         this.createShore(tileset, map);
@@ -51,7 +52,7 @@ export class Level extends Scene {
         this.basilisk.create();
         map.createStaticLayer('WaterEffect', tileset, 0, 0);
         this.energyMeter.create();
-        this.createTarget();
+        this.setTarget();
         this.sinkOrSwim();
         this.createPrey();
     };
@@ -137,14 +138,23 @@ export class Level extends Scene {
     };
 
     createTarget = () => {
-        this.egg = this.physics.add.sprite(
-            this.targetPosition.x,
-            this.targetPosition.y,
-            'egg'
-        );
-        this.physics.add.collider(this.ground, this.egg);
-        this.physics.add.collider(this.shore, this.egg);
-        this.physics.add.overlap(this.basilisk.sprite, this.egg, () => {
+        this.target = this.physics.add.group({
+            name: 'eggs',
+        });
+        for (let i = 0; i < 3; i++) {
+            let egg = this.physics.add.image(
+                this.targetPosition.x + 24 - i * 24,
+                this.targetPosition.y,
+                'egg'
+            );
+            this.target.add(egg);
+        }
+    };
+
+    setTarget = () => {
+        this.physics.add.collider(this.ground, this.target);
+        this.physics.add.collider(this.shore, this.target);
+        this.physics.add.overlap(this.basilisk.sprite, this.target, () => {
             this.onWinLevel();
         });
     };
