@@ -77,15 +77,29 @@ export class Basilisk {
 
     update = () => {
         const cursors = this.scene.input.keyboard.createCursorKeys();
-        if (cursors.left.isDown) {
-            this.runLeft();
-        } else if (cursors.right.isDown) {
-            this.runRight();
-        } else if (this.sprite.body.blocked.down) {
-            this.rest();
-        }
-        if (cursors.up.isDown && this.sprite.body.blocked.down) {
-            this.jump();
+
+        if (this.jesusModeStatus === Basilisk.JESUS_MODE_STATUSES.SUBMERGED) {
+            if (cursors.left.isDown) {
+                this.runLeft();
+            } else if (cursors.right.isDown) {
+                this.runRight();
+            } else if (this.sprite.body.blocked.down) {
+                this.float();
+            }
+            if (cursors.up.isDown && this.sprite.body.blocked.down) {
+                this.jump();
+            }
+        } else {
+            if (cursors.left.isDown) {
+                this.runLeft();
+            } else if (cursors.right.isDown) {
+                this.runRight();
+            } else if (this.sprite.body.blocked.down) {
+                this.rest();
+            }
+            if (cursors.up.isDown && this.sprite.body.blocked.down) {
+                this.jump();
+            }
         }
     };
 
@@ -273,5 +287,14 @@ export class Basilisk {
         }
         // stop moving
         this.sprite.setVelocityX(0);
+    };
+
+    float = () => {
+        this.rest();
+        if (this.direction === Basilisk.DIRECTION.LEFT) {
+            this.sprite.setFrame(32);
+        } else {
+            this.sprite.setFrame(31);
+        }
     };
 }
