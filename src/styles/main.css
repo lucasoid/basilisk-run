@@ -10,6 +10,11 @@ body {
         sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
+#header {
+    width: 50%;
+    margin: 0 auto;
+}
+
 #main {
     display: flex;
     justify-content: space-between;
@@ -27,4 +32,19 @@ body {
 #root {
     width: 100%;
     background: #dfdfdf;
+}
+
+#controls {
+    padding: 0 10px;
+}
+
+#controls button {
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    color: #fff;
+    font-size: 24px;
+    width: 2em;
+    padding: 0.5em;
+    background: rgba(0, 135, 200, 1);
 }
