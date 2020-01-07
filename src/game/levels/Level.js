@@ -7,6 +7,7 @@ import { Butterfly } from '../models/Butterfly';
 import tileset from '../assets/tiles.png';
 import skyImg from '../assets/sky-day.png';
 import eggImg from '../assets/egg.png';
+import hatch from '../assets/sfx/hatch.wav';
 
 export class Level extends Scene {
     energyMeter;
@@ -19,6 +20,7 @@ export class Level extends Scene {
     tilemapKey;
     tilemap;
     prey = [];
+    sfx = {};
 
     constructor(config) {
         super(config);
@@ -36,6 +38,7 @@ export class Level extends Scene {
         this.energyMeter.preload();
         Beetle.preload(this);
         Butterfly.preload(this);
+        this.load.audio('hatch', hatch);
     };
 
     create = () => {
@@ -55,6 +58,7 @@ export class Level extends Scene {
         this.setTarget();
         this.sinkOrSwim();
         this.createPrey();
+        this.sfx.hatch = this.sound.add('hatch');
     };
 
     update = () => {
@@ -155,6 +159,7 @@ export class Level extends Scene {
         this.physics.add.collider(this.ground, this.target);
         this.physics.add.collider(this.shore, this.target);
         this.physics.add.overlap(this.basilisk.sprite, this.target, () => {
+            this.sfx.hatch.play();
             this.onWinLevel();
         });
     };

@@ -1,4 +1,5 @@
 import basiliskSprites from '../assets/basilisk.png';
+import footSplash from '../assets/sfx/foot_splash.wav';
 
 const SPEED = 400;
 
@@ -42,6 +43,9 @@ export class Basilisk {
     jesusModeInterval = null;
     jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.INACTIVE;
     direction = Basilisk.DIRECTION.LEFT;
+    sfx = {
+        footSplash: null,
+    };
 
     constructor(scene) {
         this.scene = scene;
@@ -54,6 +58,7 @@ export class Basilisk {
                 frameHeight: Basilisk.height,
             });
         }
+        this.scene.load.audio('foot_splash', footSplash);
     };
 
     create = () => {
@@ -73,6 +78,10 @@ export class Basilisk {
         this.createAnimations();
         this.sprite.anims.play(Basilisk.animations.restRight, true);
         this.scene.cameras.main.startFollow(this.sprite);
+        this.sfx.footSplash = this.scene.sound.add('foot_splash', {
+            rate: 1.1,
+            loop: true,
+        });
     };
 
     update = () => {
@@ -100,6 +109,14 @@ export class Basilisk {
             if (cursors.up.isDown && this.sprite.body.blocked.down) {
                 this.jump();
             }
+        }
+        if (this.jesusModeStatus === Basilisk.JESUS_MODE_STATUSES.ACTIVE) {
+            if (!this.sfx.footSplash.isPlaying && this.sprite.body.blocked.down)
+                this.sfx.footSplash.play();
+            if (this.sfx.footSplash.isPlaying && !this.sprite.body.blocked.down)
+                this.sfx.footSplash.stop();
+        } else {
+            if (this.sfx.footSplash.isPlaying) this.sfx.footSplash.stop();
         }
     };
 

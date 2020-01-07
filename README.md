@@ -8,8 +8,6 @@ Species featured in the game:
 -   montane giant tiger beetle
 -   blue morpho butterfly
 
-## Prey
-
 ## Demo
 
 Play it here: https://basilisk-run.web.app/
@@ -38,6 +36,10 @@ Play it here: https://basilisk-run.web.app/
 -   Birds - raptors, like hawks, vultures, and eagles
 -   Mammals - coati, opossum
 
-## Authors:
+## Credits:
 
-(c) 2019, Ben and Leo Lucas
+Art direction - Leo Lucas
+Art production - Ben Lucas
+Sound production - Leo Lucas, Adam Lucas, Ben Lucas
+Game design - Ben Lucas
+QA - Leo and Adam Lucas
