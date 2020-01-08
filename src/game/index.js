@@ -19,8 +19,6 @@ export function mountGame(el) {
         },
     });
 
-    game.sound.mute = true;
-
     const level1 = new Level1({ active: true, visible: false });
     const level2 = new Level2({ active: false, visible: false });
     game.scene.add('Level1', level1);

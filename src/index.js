@@ -1,4 +1,5 @@
 import { mountGame } from './game';
+import { dispatch, types, subscribe, getState } from './game/state';
 
 const el = document.getElementById('root');
 const game = mountGame(el);
@@ -8,20 +9,24 @@ const game = mountGame(el);
 function configureMuteButton() {
     const muteButton = document.getElementById('toggle-mute');
 
-    function setMuteButton(isMuted) {
-        muteButton.innerHTML = isMuted
-            ? '<span class="fas fa-volume-mute"></span>'
-            : '<span class="fas fa-volume-up"></span>';
-        muteButton.title = isMuted ? 'Unmute' : 'Mute';
-        muteButton.className = isMuted ? 'muted' : 'unmuted';
-    }
-
-    setMuteButton(true);
+    const muteSubscriber = state => {
+        if (state.muted) {
+            game.sound.mute = true;
+            muteButton.title = 'Unmute';
+            muteButton.className = 'muted';
+            muteButton.innerHTML = '<span class="fas fa-volume-mute"></span>';
+        } else {
+            game.sound.mute = false;
+            muteButton.title = 'Mute';
+            muteButton.className = 'unmuted';
+            muteButton.innerHTML = '<span class="fas fa-volume-up"></span>';
+        }
+    };
+    subscribe(muteSubscriber);
 
     muteButton.addEventListener('click', function(evt) {
-        const currentValue = game.sound.mute;
-        game.sound.setMute(!currentValue);
-        setMuteButton(!currentValue);
+        let muted = getState().muted;
+        dispatch({ type: muted ? types.UNMUTE : types.MUTE });
     });
 }
 
