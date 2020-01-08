@@ -2,7 +2,7 @@
  *  rgba(0,135,200,1) - dark blue
  *  rgba(0,215,230,1) - light blue
  *  rgba(15,135,30,1) - dark green
- *  rgb(100,225,0,1) - light green
+ *  rgba(100,225,0,1) - light green
  */
 
 body {
@@ -47,4 +47,52 @@ body {
     width: 2em;
     padding: 0.5em;
     background: rgba(0, 135, 200, 1);
+}
+
+#modal-wrap {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+#modal {
+    background: #fff;
+    width: 480px;
+    max-width: 100%;
+    margin: 40px auto;
+    padding: 1em;
+}
+
+#modal-actions {
+    text-align: right;
+}
+
+#modal-close {
+    border: none;
+    box-shadow: none;
+    background: none;
+    cursor: pointer;
+}
+
+.modal-footer button {
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0.5em;
+    margin-right: 1em;
+}
+
+.modal-footer button.primary {
+    background: rgba(15, 135, 30, 1);
+    color: #fff;
+}
+
+.modal-footer button.secondary {
+    background: #ccc;
+    color: #444;
 }

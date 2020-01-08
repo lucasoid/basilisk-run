@@ -1,5 +1,7 @@
 import { Level } from './Level';
 import level1Map from './tilemaps/Level1.json';
+import { dispatch, types } from '../state';
+import { levels } from './LevelManager';
 
 const GROUND_HEIGHT = 48;
 
@@ -14,6 +16,7 @@ export class Level1 extends Level {
             x: 9600 - 144,
             y: 960 - GROUND_HEIGHT - 10,
         };
+        this.timeouts = [];
     }
 
     createPrey = () => {
@@ -22,9 +25,10 @@ export class Level1 extends Level {
         const setRespawningBeetle = (x, y, i) => {
             beetles[i] = this.spawnBeetle(x, y, () => {
                 delete beetles[i];
-                setTimeout(() => {
+                let tid = setTimeout(() => {
                     beetles[i] = setRespawningBeetle(x, y, i);
                 }, 3000);
+                this.timeouts.push(tid);
             });
         };
         setRespawningBeetle(400, beetleHeight, '_1');
@@ -43,9 +47,10 @@ export class Level1 extends Level {
         const setRespawningButterfly = (x, y, i) => {
             butterflies[i] = this.spawnButterfly(x, y, () => {
                 delete butterflies[i];
-                setTimeout(() => {
+                let tid = setTimeout(() => {
                     butterflies[i] = setRespawningButterfly(x, y, i);
                 }, 3000);
+                this.timeouts.push(tid);
             });
         };
         setRespawningButterfly(500, butterflyHeight, '_1');
@@ -56,7 +61,7 @@ export class Level1 extends Level {
     };
 
     onWinLevel = () => {
-        this.scene.stop();
-        this.scene.start('StageComplete', { level: 1, transitionTo: 'Level2' });
+        dispatch({ type: types.SET_LEVEL, level: levels.LEVEL2.key });
+        this.timeouts.forEach(tid => clearTimeout(tid));
     };
 }

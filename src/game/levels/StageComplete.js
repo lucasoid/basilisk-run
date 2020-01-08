@@ -16,7 +16,7 @@ export class StageComplete extends Scene {
         const text = this.add.text(
             constants.screen.WIDTH / 2 - textWidth / 2,
             constants.screen.HEIGHT / 2,
-            `Level ${this.level} complete!`,
+            `${this.level} complete!`,
             {
                 fontSize: '30px',
                 fontFamily: constants.styles.fontStack,

@@ -1,5 +1,7 @@
 import { Level } from './Level';
-import level2Map from './tilemaps/Level2.json';
+import level2Map from './tilemaps/Level1.json';
+import { dispatch, types } from '../state';
+import { levels } from './LevelManager';
 
 const GROUND_HEIGHT = 72;
 
@@ -21,7 +23,6 @@ export class Level2 extends Level {
     };
 
     onWinLevel = () => {
-        this.scene.stop();
-        this.scene.start('StageComplete', { level: 2, transitionTo: 'Level1' });
+        dispatch({ type: types.SET_LEVEL, level: levels.LEVEL1.key });
     };
 }

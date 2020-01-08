@@ -7,7 +7,7 @@ export const types = {
 };
 
 const _state = {
-    level: 1,
+    level: 'Level1',
     muted: true,
     paused: false,
 };
