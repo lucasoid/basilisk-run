@@ -44,7 +44,7 @@ export class Level extends Scene {
     create = () => {
         this.createBackground();
         const map = this.make.tilemap({ key: this.tilemapKey });
-        const tileset = map.addTilesetImage('tiles', 'tiles');
+        const tileset = map.addTilesetImage('tiles', 'tiles', 24, 24, 1, 2);
         map.createStaticLayer('Undercoat', tileset, 0, 0);
         this.createTarget();
         this.createGround(tileset, map);

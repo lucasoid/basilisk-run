@@ -1,5 +1,6 @@
 node_modules
 .notes/*
 dist
+src/game/assets/tiles.png
 .cache
 .firebase

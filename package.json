@@ -12,9 +12,13 @@
         "husky": "^3.1.0",
         "parcel-bundler": "^1.12.4",
         "prettier": "^1.19.1",
-        "pretty-quick": "^2.0.1"
+        "pretty-quick": "^2.0.1",
+        "tile-extruder": "^2.0.3"
     },
     "scripts": {
+        "extrude-tiles": "tile-extruder --tileWidth 24 --tileHeight 24 --input src/game/assets/tiles-raw.png --output src/game/assets/tiles.png",
+        "preserve": "npm run extrude-tiles",
+        "prebuild": "npm run extrude-tiles",
         "serve": "parcel src/index.html",
         "build": "parcel build src/index.html",
         "deploy": "npm run build && firebase deploy --token $FIREBASE_TOKEN"
