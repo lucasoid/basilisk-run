@@ -18,7 +18,7 @@ export const levels = {
     },
     STAGE_COMPLETE: {
         title: 'Stage complete',
-        key: 'stage_complete',
+        key: 'StageComplete',
         scene: new StageComplete(),
     },
     PAUSE: {
@@ -40,7 +40,7 @@ const handleLevelChange = state => {
         if (currentLevel !== undefined) {
             let old = getLevelByKey(currentLevel);
             old.scene.scene.stop();
-            game.scene.start('StageComplete', {
+            game.scene.start(levels.STAGE_COMPLETE.key, {
                 level: old.title,
                 transitionTo: state.level,
             });
