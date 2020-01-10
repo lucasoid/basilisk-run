@@ -1,11 +1,11 @@
-import { subscribe } from '../state';
+import { subscribe, dispatch, types } from '../state';
 import { game } from '../../game';
 import { Level1 } from './Level1';
 import { Level2 } from './Level2';
 import { StageComplete } from './StageComplete';
 import { Pause } from './Pause';
 
-export const levels = {
+const scenes = {
     LEVEL1: {
         title: 'Level 1',
         key: 'Level1',
@@ -28,10 +28,20 @@ export const levels = {
     },
 };
 
-const getLevelByKey = key => {
-    let LEVEL = Object.keys(levels).find(k => levels[k].key === key);
-    return levels[LEVEL] || null;
-};
+export const levels = [
+    scenes.LEVEL1,
+    scenes.LEVEL2,
+    // scenes.LEVEL3,
+    // scenes.LEVEL4,
+    // scenes.LEVEL5,
+    // scenes.LEVEL6,
+    // scenes.LEVEL7,
+    // scenes.LEVEL8,
+    // scenes.LEVEL9,
+    // scenes.LEVEL10
+];
+
+export const getLevelByKey = key => levels.find(l => l.key === key);
 
 let currentLevel = undefined;
 
@@ -40,7 +50,7 @@ const handleLevelChange = state => {
         if (currentLevel !== undefined) {
             let old = getLevelByKey(currentLevel);
             old.scene.scene.stop();
-            game.scene.start(levels.STAGE_COMPLETE.key, {
+            game.scene.start(scenes.STAGE_COMPLETE.key, {
                 level: old.title,
                 transitionTo: state.level,
             });
@@ -61,23 +71,20 @@ const handlePause = state => {
     ) {
         if (state.paused) {
             current.scene.scene.pause();
-            game.scene.start(levels.PAUSE.key);
-            game.scene.bringToTop(levels.PAUSE.key);
+            game.scene.start(scenes.PAUSE.key);
+            game.scene.bringToTop(scenes.PAUSE.key);
         } else {
             current.scene.scene.resume();
-            game.scene.stop(levels.PAUSE.key);
-            game.scene.sendToBack(levels.PAUSE.key);
+            game.scene.stop(scenes.PAUSE.key);
+            game.scene.sendToBack(scenes.PAUSE.key);
         }
     }
 };
 
 export const init = () => {
-    game.scene.add(levels.LEVEL1.key, levels.LEVEL1.scene);
-    game.scene.add(levels.LEVEL2.key, levels.LEVEL2.scene);
-
-    game.scene.add(levels.STAGE_COMPLETE.key, levels.STAGE_COMPLETE.scene);
-    game.scene.add(levels.PAUSE.key, levels.PAUSE.scene);
-
+    Object.keys(scenes).forEach(k =>
+        game.scene.add(scenes[k].key, scenes[k].scene)
+    );
     subscribe(handleLevelChange);
     subscribe(handlePause);
 };
@@ -88,4 +95,12 @@ export const restartCurrentLevel = () => {
         current.scene.scene.stop();
         current.scene.scene.start();
     }
+};
+
+export const advanceToNextLevel = () => {
+    const nextIndex = !currentLevel
+        ? 0
+        : levels.findIndex(l => l.key === currentLevel) + 1;
+    if (!levels[nextIndex]) throw new Error('Next level does not exist');
+    dispatch({ type: types.SET_LEVEL, level: levels[nextIndex].key });
 };

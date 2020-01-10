@@ -1,7 +1,6 @@
 import { Level } from './Level';
 import level1Map from './tilemaps/Level1.json';
-import { dispatch, types } from '../state';
-import { levels } from './LevelManager';
+import { advanceToNextLevel } from './LevelManager';
 
 const GROUND_HEIGHT = 48;
 
@@ -61,7 +60,7 @@ export class Level1 extends Level {
     };
 
     onWinLevel = () => {
-        dispatch({ type: types.SET_LEVEL, level: levels.LEVEL2.key });
+        advanceToNextLevel();
         this.timeouts.forEach(tid => clearTimeout(tid));
     };
 }
