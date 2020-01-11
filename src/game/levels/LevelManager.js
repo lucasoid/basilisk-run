@@ -95,12 +95,26 @@ const handlePause = state => {
     }
 };
 
+const handleZoom = state => {
+    let current = getLevelByKey(state.level);
+    if (current && current.scene && current.scene.cameras) {
+        current.scene.cameras.main.setZoom(state.zoom);
+        if (current.scene.background) {
+            current.scene.background.setDisplaySize(
+                (1 / state.zoom) * current.scene.cameras.main.width,
+                (1 / state.zoom) * current.scene.cameras.main.height
+            );
+        }
+    }
+};
+
 export const init = () => {
     Object.keys(scenes).forEach(k =>
         game.scene.add(scenes[k].key, scenes[k].scene)
     );
     subscribe(handleLevelChange);
     subscribe(handlePause);
+    subscribe(handleZoom);
 };
 
 export const restartCurrentLevel = () => {

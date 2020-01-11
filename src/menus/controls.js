@@ -2,7 +2,6 @@ import { game } from '../game';
 import * as LevelManager from '../game/levels/LevelManager';
 import { subscribe, dispatch, getState, types } from '../game/state';
 import { renderModal } from './modal';
-import { toggleLevelMenu } from './levels';
 
 function configureMuteButton() {
     const muteButton = document.getElementById('toggle-mute');
@@ -107,10 +106,35 @@ function configureActiveLevel() {
     subscribe(levelSubscriber);
 }
 
+function configureZoom() {
+    const zoomOut = document.getElementById('zoom-out');
+
+    zoomOut.innerHTML = '<span class="fas fa-search-minus"></span>';
+    zoomOut.title = 'Zoom out';
+    zoomOut.addEventListener('click', () => {
+        dispatch({ type: types.ZOOM_OUT });
+    });
+
+    const zoomIn = document.getElementById('zoom-in');
+    zoomIn.innerHTML = '<span class="fas fa-search-plus"></span>';
+    zoomIn.title = 'Zoom in';
+    zoomIn.addEventListener('click', () => {
+        dispatch({ type: types.ZOOM_IN });
+    });
+
+    const zoomSubscriber = state => {
+        zoomIn.className = state.zoom >= 1 ? 'active' : '';
+        zoomOut.className = state.zoom < 1 ? 'active' : '';
+    };
+
+    subscribe(zoomSubscriber);
+}
+
 export function registerControls() {
     configureMuteButton();
     configurePauseButton();
     configureRestartButton();
     configureMenuButton();
     configureActiveLevel();
+    configureZoom();
 }

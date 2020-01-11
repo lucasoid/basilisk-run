@@ -67,12 +67,12 @@ export class Level extends Scene {
     };
 
     createBackground = () => {
-        const background = this.add.image(
+        this.background = this.add.image(
             constants.screen.WIDTH / 2,
             constants.screen.HEIGHT / 2,
             'sky'
         );
-        background.setScrollFactor(0);
+        this.background.setScrollFactor(0);
     };
 
     createGround = (tileset, map) => {

@@ -8,6 +8,8 @@ export const types = {
     UNMUTE: 'UNMUTE',
     OPEN_MENU: 'OPEN_MENU',
     CLOSE_MENU: 'CLOSE_MENU',
+    ZOOM_OUT: 'ZOOM_OUT',
+    ZOOM_IN: 'ZOOM_IN',
 };
 
 const _state = {
@@ -17,6 +19,7 @@ const _state = {
     muted: true,
     paused: false,
     isMenuOpen: false,
+    zoom: 1,
 };
 
 const reducer = (action, state = _state) => {
@@ -47,6 +50,10 @@ const reducer = (action, state = _state) => {
             return { ...state, isMenuOpen: true };
         case types.CLOSE_MENU:
             return { ...state, isMenuOpen: false };
+        case types.ZOOM_OUT:
+            return { ...state, zoom: Math.max(0.5, state.zoom - 0.1) };
+        case types.ZOOM_IN:
+            return { ...state, zoom: Math.min(1, state.zoom + 0.1) };
         default:
             return state;
     }
