@@ -1,7 +1,8 @@
+import { game } from '../game';
+import * as LevelManager from '../game/levels/LevelManager';
 import { subscribe, dispatch, getState, types } from '../game/state';
 import { renderModal } from './modal';
-import * as LevelManager from '../game/levels/LevelManager';
-import { game } from '../game';
+import { toggleLevelMenu } from './levels';
 
 function configureMuteButton() {
     const muteButton = document.getElementById('toggle-mute');
@@ -10,12 +11,12 @@ function configureMuteButton() {
         if (state.muted) {
             game.sound.mute = true;
             muteButton.title = 'Unmute';
-            muteButton.className = 'muted';
+            muteButton.className = 'active';
             muteButton.innerHTML = '<span class="fas fa-volume-mute"></span>';
         } else {
             game.sound.mute = false;
             muteButton.title = 'Mute';
-            muteButton.className = 'unmuted';
+            muteButton.className = '';
             muteButton.innerHTML = '<span class="fas fa-volume-up"></span>';
         }
     };
@@ -33,11 +34,11 @@ function configurePauseButton() {
     const pauseSubscriber = state => {
         if (state.paused) {
             pauseButton.title = 'Resume';
-            pauseButton.className = 'paused';
+            pauseButton.className = 'active';
             pauseButton.innerHTML = '<span class="fas fa-play"></span>';
         } else {
             pauseButton.title = 'Pause';
-            pauseButton.className = 'playing';
+            pauseButton.className = '';
             pauseButton.innerHTML = '<span class="fas fa-pause"></span>';
         }
     };
@@ -80,8 +81,36 @@ function configureRestartButton() {
     });
 }
 
+function configureMenuButton() {
+    const menuButton = document.getElementById('toggle-menu');
+    menuButton.innerHTML = '<span class="fas fa-bars"></span>';
+    menuButton.title = 'Open level menu';
+    menuButton.addEventListener('click', () => {
+        let isMenuOpen = getState().isMenuOpen;
+        dispatch({ type: isMenuOpen ? types.CLOSE_MENU : types.OPEN_MENU });
+    });
+
+    const menuSubscriber = state => {
+        menuButton.className = state.isMenuOpen ? 'active' : '';
+    };
+    subscribe(menuSubscriber);
+}
+
+function configureActiveLevel() {
+    const activeLevelSpan = document.getElementById('active-level');
+
+    const levelSubscriber = state => {
+        activeLevelSpan.innerHTML = LevelManager.getLevelByKey(
+            state.level
+        ).title;
+    };
+    subscribe(levelSubscriber);
+}
+
 export function registerControls() {
     configureMuteButton();
     configurePauseButton();
     configureRestartButton();
+    configureMenuButton();
+    configureActiveLevel();
 }

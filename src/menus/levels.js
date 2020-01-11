@@ -1,4 +1,4 @@
-import { subscribe, dispatch, types } from '../game/state';
+import { subscribe, dispatch, types, getState } from '../game/state';
 import { renderModal } from './modal';
 import * as LevelManager from '../game/levels/LevelManager';
 
@@ -20,9 +20,12 @@ function promptChangeLevel(level) {
 }
 
 function configureLevels() {
+    const levelMenu = document.getElementById('level-menu');
     const levelList = document.getElementById('level-list');
 
     const levelSubscriber = state => {
+        levelMenu.className = state.isMenuOpen ? 'open' : 'closed';
+
         let activeLevel = LevelManager.getLevelByKey(state.level);
         levelList.innerHTML = '';
         LevelManager.levels.forEach(level => {
@@ -39,6 +42,11 @@ function configureLevels() {
         });
     };
     subscribe(levelSubscriber);
+
+    const closeButton = document.getElementById('menu-close');
+    closeButton.addEventListener('click', () => {
+        dispatch({ type: types.CLOSE_MENU });
+    });
 }
 
 export function registerLevelsMenu() {

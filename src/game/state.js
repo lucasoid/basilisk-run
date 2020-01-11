@@ -4,12 +4,15 @@ export const types = {
     RESUME: 'RESUME',
     MUTE: 'MUTE',
     UNMUTE: 'UNMUTE',
+    OPEN_MENU: 'OPEN_MENU',
+    CLOSE_MENU: 'CLOSE_MENU',
 };
 
 const _state = {
     level: 'Level1',
     muted: true,
     paused: false,
+    isMenuOpen: false,
 };
 
 const reducer = (action, state = _state) => {
@@ -24,6 +27,10 @@ const reducer = (action, state = _state) => {
             return { ...state, muted: true };
         case types.UNMUTE:
             return { ...state, muted: false };
+        case types.OPEN_MENU:
+            return { ...state, isMenuOpen: true };
+        case types.CLOSE_MENU:
+            return { ...state, isMenuOpen: false };
         default:
             return state;
     }
