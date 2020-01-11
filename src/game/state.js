@@ -1,3 +1,5 @@
+import { levels } from './levels/LevelManager';
+
 export const types = {
     SET_LEVEL: 'SET_LEVEL',
     PAUSE: 'PAUSE',
@@ -10,6 +12,8 @@ export const types = {
 
 const _state = {
     level: 'Level1',
+    highestLevel: 'Level1',
+    showTransition: false,
     muted: true,
     paused: false,
     isMenuOpen: false,
@@ -18,7 +22,19 @@ const _state = {
 const reducer = (action, state = _state) => {
     switch (action.type) {
         case types.SET_LEVEL:
-            return { ...state, level: action.level };
+            let levelIndex = levels.findIndex(l => l.key === action.level);
+            let highestIndex = levels.findIndex(
+                l => l.key === state.highestLevel
+            );
+            let newState = {
+                ...state,
+                level: action.level,
+                showTransition: !!action.showTransition,
+            };
+            if (levelIndex > highestIndex) {
+                newState.highestLevel = action.level;
+            }
+            return newState;
         case types.PAUSE:
             return { ...state, paused: true };
         case types.RESUME:

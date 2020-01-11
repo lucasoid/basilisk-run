@@ -14,7 +14,22 @@ const scenes = {
     LEVEL2: {
         title: 'Level 2',
         key: 'Level2',
-        scene: new Level2(),
+        scene: new Level1(),
+    },
+    LEVEL3: {
+        title: 'Level 3',
+        key: 'Level3',
+        scene: new Level1(),
+    },
+    LEVEL4: {
+        title: 'Level 4',
+        key: 'Level4',
+        scene: new Level1(),
+    },
+    LEVEL5: {
+        title: 'Level 5',
+        key: 'Level5',
+        scene: new Level1(),
     },
     STAGE_COMPLETE: {
         title: 'Stage complete',
@@ -31,9 +46,9 @@ const scenes = {
 export const levels = [
     scenes.LEVEL1,
     scenes.LEVEL2,
-    // scenes.LEVEL3,
-    // scenes.LEVEL4,
-    // scenes.LEVEL5,
+    scenes.LEVEL3,
+    scenes.LEVEL4,
+    scenes.LEVEL5,
     // scenes.LEVEL6,
     // scenes.LEVEL7,
     // scenes.LEVEL8,
@@ -50,10 +65,14 @@ const handleLevelChange = state => {
         if (currentLevel !== undefined) {
             let old = getLevelByKey(currentLevel);
             old.scene.scene.stop();
-            game.scene.start(scenes.STAGE_COMPLETE.key, {
-                level: old.title,
-                transitionTo: state.level,
-            });
+            if (state.showTransition) {
+                game.scene.start(scenes.STAGE_COMPLETE.key, {
+                    level: old.title,
+                    transitionTo: state.level,
+                });
+            } else {
+                game.scene.start(state.level);
+            }
         } else {
             game.scene.start(state.level);
         }
@@ -63,12 +82,7 @@ const handleLevelChange = state => {
 
 const handlePause = state => {
     let current = getLevelByKey(state.level);
-    if (
-        current &&
-        current.scene &&
-        current.scene.scene &&
-        current.scene.scene.isPaused() !== state.paused
-    ) {
+    if (current && current.scene && current.scene.scene) {
         if (state.paused) {
             current.scene.scene.pause();
             game.scene.start(scenes.PAUSE.key);
@@ -102,5 +116,9 @@ export const advanceToNextLevel = () => {
         ? 0
         : levels.findIndex(l => l.key === currentLevel) + 1;
     if (!levels[nextIndex]) throw new Error('Next level does not exist');
-    dispatch({ type: types.SET_LEVEL, level: levels[nextIndex].key });
+    dispatch({
+        type: types.SET_LEVEL,
+        level: levels[nextIndex].key,
+        showTransition: true,
+    });
 };
