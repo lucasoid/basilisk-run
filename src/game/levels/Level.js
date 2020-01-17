@@ -7,6 +7,12 @@ import { Butterfly } from '../models/Butterfly';
 import tileset from '../assets/tiles.png';
 import skyImg from '../assets/sky-day.png';
 import eggImg from '../assets/egg.png';
+import forest1 from '../assets/forest-1.png';
+import forest2 from '../assets/forest-2.png';
+import forest3 from '../assets/forest-3.png';
+import tree1 from '../assets/tree-1.png';
+import shrub1 from '../assets/shrub-1.png';
+import shrub2 from '../assets/shrub-2.png';
 import hatch from '../assets/sfx/hatch.wav';
 
 export class Level extends Scene {
@@ -32,6 +38,15 @@ export class Level extends Scene {
         if (!this.textures.exists('sky')) this.load.image('sky', skyImg);
         if (!this.textures.exists('tiles')) this.load.image('tiles', tileset);
         if (!this.textures.exists('egg')) this.load.image('egg', eggImg);
+        if (!this.textures.exists('forest1'))
+            this.load.image('forest1', forest1);
+        if (!this.textures.exists('forest2'))
+            this.load.image('forest2', forest2);
+        if (!this.textures.exists('forest3'))
+            this.load.image('forest3', forest3);
+        if (!this.textures.exists('tree1')) this.load.image('tree1', tree1);
+        if (!this.textures.exists('shrub1')) this.load.image('shrub1', shrub1);
+        if (!this.textures.exists('shrub2')) this.load.image('shrub2', shrub2);
         if (!this.textures.exists(this.tilemapKey))
             this.load.tilemapTiledJSON(this.tilemapKey, this.tilemap);
         this.basilisk.preload();
@@ -44,7 +59,9 @@ export class Level extends Scene {
     create = () => {
         this.createBackground();
         const map = this.make.tilemap({ key: this.tilemapKey });
+        map.addTilesetImage();
         const tileset = map.addTilesetImage('tiles', 'tiles', 24, 24, 1, 2);
+        this.createForest(tileset, map);
         map.createStaticLayer('Undercoat', tileset, 0, 0);
         this.createTarget();
         this.createGround(tileset, map);
@@ -73,6 +90,27 @@ export class Level extends Scene {
             'sky'
         );
         this.background.setScrollFactor(0);
+    };
+
+    createForest = (tileset, map) => {
+        const forest3 = map.createFromObjects('Forest 3', 43, {
+            key: 'forest3',
+        });
+        const forest2 = map.createFromObjects('Forest 2', 42, {
+            key: 'forest2',
+        });
+        const forest1 = map.createFromObjects('Forest 1', 41, {
+            key: 'forest1',
+        });
+        const trees = map.createFromObjects('Forest Foreground', 44, {
+            key: 'tree1',
+        });
+        const shrub1 = map.createFromObjects('Forest Foreground', 45, {
+            key: 'shrub1',
+        });
+        const shrub2 = map.createFromObjects('Forest Foreground', 46, {
+            key: 'shrub2',
+        });
     };
 
     createGround = (tileset, map) => {
