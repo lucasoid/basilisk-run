@@ -36,6 +36,50 @@ body {
     height: 480px;
 }
 
+#energy-meter {
+    height: 24px;
+    background: #cecece;
+    margin-top: 10px;
+    display: flex;
+}
+
+#energy-meter .energy-bar {
+    height: 100%;
+    box-sizing: border-box;
+    display: inline-block;
+    border: 1px solid #fff;
+}
+
+#energy-meter .energy-bar:last-child {
+    border-right: none;
+}
+
+#energy-meter .energy-bar:first-child {
+    border-left: none;
+}
+
+#energy-meter .energy-bar.active {
+    background: #66ff00;
+}
+
+#energy-meter .energy-bar.active#energy-bar-1,
+#energy-meter .energy-bar.active#energy-bar-2,
+#energy-meter .energy-bar.active#energy-bar-3 {
+    background: #cc5500;
+}
+
+#energy-meter .energy-bar.active#energy-bar-4,
+#energy-meter .energy-bar.active#energy-bar-5,
+#energy-meter .energy-bar.active#energy-bar-6 {
+    background: #a09000;
+}
+
+#energy-meter .energy-bar.active#energy-bar-7,
+#energy-meter .energy-bar.active#energy-bar-8,
+#energy-meter .energy-bar.active#energy-bar-9 {
+    background: #8cbe00;
+}
+
 #controls {
     margin-top: 24px;
 }

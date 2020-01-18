@@ -1,4 +1,5 @@
 import { levels } from './levels/LevelManager';
+import constants from './constants';
 
 export const types = {
     SET_LEVEL: 'SET_LEVEL',
@@ -10,6 +11,9 @@ export const types = {
     CLOSE_MENU: 'CLOSE_MENU',
     ZOOM_OUT: 'ZOOM_OUT',
     ZOOM_IN: 'ZOOM_IN',
+    SET_ENERGY_LEVEL: 'SET_ENERGY_LEVEL',
+    CHANGE_ENERGY_LEVEL: 'CHANGE_ENERGY_LEVEL',
+    RESET_ENERGY_LEVEL: 'RESET_ENERGY_LEVEL',
 };
 
 const _state = {
@@ -20,7 +24,12 @@ const _state = {
     paused: false,
     isMenuOpen: false,
     zoom: 1,
+    energyLevel: constants.player.defaultEnergy,
 };
+
+function getValueInRange(value, rangeMin, rangeMax) {
+    return Math.max(rangeMin, Math.min(rangeMax, value));
+}
 
 const reducer = (action, state = _state) => {
     switch (action.type) {
@@ -51,9 +60,35 @@ const reducer = (action, state = _state) => {
         case types.CLOSE_MENU:
             return { ...state, isMenuOpen: false };
         case types.ZOOM_OUT:
-            return { ...state, zoom: Math.max(0.5, state.zoom - 0.1) };
+            return {
+                ...state,
+                zoom: getValueInRange(state.zoom - 0.1, 0.5, 1),
+            };
         case types.ZOOM_IN:
-            return { ...state, zoom: Math.min(1, state.zoom + 0.1) };
+            return {
+                ...state,
+                zoom: getValueInRange(state.zoom + 0.1, 0.5, 1),
+            };
+        case types.SET_ENERGY_LEVEL:
+            return {
+                ...state,
+                energyLevel: getValueInRange(
+                    action.energyLevel,
+                    0,
+                    constants.player.maxEnergy
+                ),
+            };
+        case types.CHANGE_ENERGY_LEVEL:
+            return {
+                ...state,
+                energyLevel: getValueInRange(
+                    state.energyLevel + action.delta,
+                    0,
+                    constants.player.maxEnergy
+                ),
+            };
+        case types.RESET_ENERGY_LEVEL:
+            return { ...state, energyLevel: constants.player.defaultEnergy };
         default:
             return state;
     }

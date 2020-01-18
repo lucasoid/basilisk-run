@@ -1,7 +1,6 @@
 import { Scene } from 'phaser';
 import constants from '../constants';
 import { Basilisk } from '../models/Basilisk';
-import { EnergyMeter } from '../models/EnergyMeter';
 import { Beetle } from '../models/Beetle';
 import { Butterfly } from '../models/Butterfly';
 import tileset from '../assets/tiles.png';
@@ -14,9 +13,9 @@ import tree1 from '../assets/tree-1.png';
 import shrub1 from '../assets/shrub-1.png';
 import shrub2 from '../assets/shrub-2.png';
 import hatch from '../assets/sfx/hatch.wav';
+import { dispatch, types, getState } from '../state';
 
 export class Level extends Scene {
-    energyMeter;
     basilisk;
     ground;
     water;
@@ -31,7 +30,6 @@ export class Level extends Scene {
     constructor(config) {
         super(config);
         this.basilisk = new Basilisk(this);
-        this.energyMeter = new EnergyMeter(this, this.basilisk);
     }
 
     preload = () => {
@@ -50,7 +48,6 @@ export class Level extends Scene {
         if (!this.textures.exists(this.tilemapKey))
             this.load.tilemapTiledJSON(this.tilemapKey, this.tilemap);
         this.basilisk.preload();
-        this.energyMeter.preload();
         Beetle.preload(this);
         Butterfly.preload(this);
         this.load.audio('hatch', hatch);
@@ -71,7 +68,6 @@ export class Level extends Scene {
         this.createBounds(map);
         this.basilisk.create();
         map.createStaticLayer('WaterEffect', tileset, 0, 0);
-        this.energyMeter.create();
         this.setTarget();
         this.sinkOrSwim();
         this.createPrey();
@@ -162,9 +158,10 @@ export class Level extends Scene {
             this.basilisk.sprite,
             this.water,
             () => {
+                const { energyLevel } = getState();
                 if (
                     this.basilisk.sprite.body.velocity.x === 0 &&
-                    this.basilisk.energy > 0
+                    energyLevel > 0
                 ) {
                     this.basilisk.submerge();
                 } else if (
@@ -174,7 +171,10 @@ export class Level extends Scene {
                     this.basilisk.startJesusMode();
                 }
             },
-            () => this.basilisk.energy > 0
+            () => {
+                const { energyLevel } = getState();
+                return energyLevel > 0;
+            }
         );
         this.physics.add.collider(this.basilisk.sprite, this.shore);
     };
@@ -220,7 +220,7 @@ export class Level extends Scene {
             () => {
                 beetle.sprite.destroy();
                 onDestroy();
-                this.basilisk.changeEnergy(3);
+                dispatch({ type: types.CHANGE_ENERGY_LEVEL, delta: 3 });
             },
             () => {
                 if (this.basilisk.sprite.body.velocity.x === 0) return false;
@@ -257,7 +257,7 @@ export class Level extends Scene {
             () => {
                 butterfly.sprite.destroy();
                 onDestroy();
-                this.basilisk.changeEnergy(3);
+                dispatch({ type: types.CHANGE_ENERGY_LEVEL, delta: 3 });
             },
             null
         );

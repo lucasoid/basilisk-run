@@ -1,5 +1,7 @@
 import basiliskSprites from '../assets/basilisk.png';
 import footSplash from '../assets/sfx/foot_splash.wav';
+import { dispatch, types, getState } from '../state';
+import constants from '../constants';
 
 const SPEED = 400;
 
@@ -18,8 +20,6 @@ export class Basilisk {
     static length = 320;
     static collideLength = 200;
     static height = 120;
-    static defaultEnergy = 8;
-    static maxEnergy = 24;
     static defaultSpeed = 1;
     static maxSpeed = 3;
     static jesusModeIntervalLength = 250;
@@ -36,10 +36,7 @@ export class Basilisk {
     sprite = null;
     startX = 0;
     startY = 0;
-    energy = Basilisk.defaultEnergy;
     speed = Basilisk.defaultSpeed;
-    energyCallbacks = [];
-    speedCallbacks = [];
     jesusModeInterval = null;
     jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.INACTIVE;
     direction = Basilisk.DIRECTION.LEFT;
@@ -204,41 +201,18 @@ export class Basilisk {
         });
     };
 
-    onUpdateEnergy = cb => {
-        if (typeof cb !== 'function')
-            throw new Error('callback must be a function');
-        this.energyCallbacks.push(cb);
-    };
-
-    onUpdateSpeed = cb => {
-        if (typeof cb !== 'function')
-            throw new Error('callback must be a function');
-        this.speedCallbacks.push(cb);
-    };
-
-    changeEnergy = (delta = 0) => {
-        this.setEnergy(this.energy + delta);
-    };
-
-    setEnergy = level => {
-        const prev = this.energy;
-        const next = Math.min(Basilisk.maxEnergy, Math.max(level, 0));
-        this.energy = next;
-        this.energyCallbacks.forEach(cb => cb(next, prev));
-    };
-
     setSpeed = speed => {
         const prev = this.speed;
         const next = Math.min(Basilisk.maxSpeed, Math.max(speed, 0));
         this.speed = next;
-        this.speedCallbacks.forEach(cb => cb(next, prev));
+        // this.speedCallbacks.forEach(cb => cb(next, prev));
     };
 
     submerge() {
         clearInterval(this.jesusModeInterval);
         this.jesusModeInterval = null;
         this.jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.SUBMERGED;
-        this.setEnergy(0);
+        dispatch({ type: types.SET_ENERGY_LEVEL, energyLevel: 0 });
         this.setSpeed(0.5);
     }
 
@@ -246,8 +220,9 @@ export class Basilisk {
         clearInterval(this.jesusModeInterval);
         this.jesusModeInterval = null;
         this.jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.INACTIVE;
-        if (this.energy <= Basilisk.defaultEnergy)
-            this.setEnergy(Basilisk.defaultEnergy);
+        const { energyLevel } = getState();
+        if (energyLevel < constants.player.defaultEnergy)
+            dispatch({ type: types.RESET_ENERGY_LEVEL });
         if (this.speed <= Basilisk.defaultSpeed)
             this.setSpeed(Basilisk.defaultSpeed);
     }
@@ -255,10 +230,15 @@ export class Basilisk {
     startJesusMode = () => {
         this.jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.ACTIVE;
         this.jesusModeInterval = setInterval(() => {
-            if (this.energy === 0) {
+            const { paused, energyLevel } = getState();
+            if (paused) return;
+            if (energyLevel === 0) {
                 this.submerge();
             } else {
-                this.setEnergy(Math.max(0, this.energy - 1));
+                dispatch({
+                    type: types.SET_ENERGY_LEVEL,
+                    energyLevel: energyLevel - 1,
+                });
             }
         }, Basilisk.jesusModeIntervalLength);
     };
@@ -349,5 +329,9 @@ export class Basilisk {
         } else {
             this.sprite.setFrame(31);
         }
+    };
+
+    onUpdateEnergy = () => {
+        // no op
     };
 }
