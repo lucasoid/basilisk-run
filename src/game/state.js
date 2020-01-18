@@ -1,6 +1,8 @@
 import { levels } from './levels/LevelManager';
 import constants from './constants';
 
+const STORAGE_KEY = 'basilisk_run_state';
+
 export const types = {
     SET_LEVEL: 'SET_LEVEL',
     PAUSE: 'PAUSE',
@@ -95,7 +97,25 @@ const reducer = (action, state = _state) => {
     }
 };
 
-let state = reducer({});
+const save = state => {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (err) {
+        console.error('error saving state to local storage');
+    }
+};
+
+export const getSavedState = () => {
+    try {
+        let saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return { ..._state, ...saved };
+    } catch (err) {
+        console.error('could not parse saved state');
+    }
+    return _state;
+};
+
+let state = reducer({}, getSavedState());
 const subscribers = [];
 
 export const getState = () => JSON.parse(JSON.stringify(state));
@@ -105,6 +125,7 @@ export const dispatch = action => {
         throw new Error('type is required when dispatching actions');
     state = reducer(action, getState());
     subscribers.forEach(fn => fn(state));
+    save(state);
 };
 
 export const subscribe = fn => {
