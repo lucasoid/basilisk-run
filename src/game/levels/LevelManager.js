@@ -122,6 +122,9 @@ export const restartCurrentLevel = () => {
     if (current && current.scene && current.scene.scene) {
         current.scene.scene.stop();
         current.scene.scene.start();
+        setTimeout(() => {
+            dispatch({ type: 'BUMP' }); // force zoom to update
+        }, 0);
     }
 };
 
