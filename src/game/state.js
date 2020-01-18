@@ -42,6 +42,7 @@ const reducer = (action, state = _state) => {
                 ...state,
                 level: action.level,
                 showTransition: !!action.showTransition,
+                energyLevel: constants.player.defaultEnergy,
             };
             if (levelIndex > highestIndex) {
                 newState.highestLevel = action.level;
