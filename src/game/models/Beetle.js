@@ -91,12 +91,20 @@ export class Beetle {
 
     runLeft = () => {
         this.sprite.setVelocityX(-1 * SPEED);
-        this.sprite.anims.play(Beetle.animations.runLeft, true);
+        if (!this.sprite.body.blocked.left) {
+            this.sprite.anims.play(Beetle.animations.runLeft, true);
+        } else {
+            this.sprite.anims.stop();
+        }
     };
 
     runRight = () => {
         this.sprite.setVelocityX(1 * SPEED);
-        this.sprite.anims.play(Beetle.animations.runRight, true);
+        if (!this.sprite.body.blocked.right) {
+            this.sprite.anims.play(Beetle.animations.runRight, true);
+        } else {
+            this.sprite.anims.stop();
+        }
     };
 
     rest = () => {

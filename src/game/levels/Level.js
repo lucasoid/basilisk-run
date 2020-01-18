@@ -89,22 +89,22 @@ export class Level extends Scene {
     };
 
     createForest = (tileset, map) => {
-        const forest3 = map.createFromObjects('Forest 3', 43, {
+        const forest3 = map.createFromObjects('Forest 3', 51, {
             key: 'forest3',
         });
-        const forest2 = map.createFromObjects('Forest 2', 42, {
+        const forest2 = map.createFromObjects('Forest 2', 50, {
             key: 'forest2',
         });
-        const forest1 = map.createFromObjects('Forest 1', 41, {
+        const forest1 = map.createFromObjects('Forest 1', 49, {
             key: 'forest1',
         });
-        const trees = map.createFromObjects('Forest Foreground', 44, {
+        const trees = map.createFromObjects('Forest Foreground', 52, {
             key: 'tree1',
         });
-        const shrub1 = map.createFromObjects('Forest Foreground', 45, {
+        const shrub1 = map.createFromObjects('Forest Foreground', 53, {
             key: 'shrub1',
         });
-        const shrub2 = map.createFromObjects('Forest Foreground', 46, {
+        const shrub2 = map.createFromObjects('Forest Foreground', 54, {
             key: 'shrub2',
         });
     };
@@ -117,6 +117,13 @@ export class Level extends Scene {
     createWater = (tileset, map) => {
         this.water = map.createStaticLayer('Water', tileset, 0, 0);
         this.water.setCollisionByProperty({ collides: true });
+        this.waterBoundary = map.createStaticLayer(
+            'WaterBoundary',
+            tileset,
+            0,
+            0
+        );
+        this.waterBoundary.setCollisionByProperty({ water_boundary: true });
     };
 
     createShore = (tileset, map) => {
@@ -214,6 +221,7 @@ export class Level extends Scene {
         this.physics.add.collider(this.ground, beetle.sprite);
         this.physics.add.collider(this.shore, beetle.sprite);
         this.physics.add.collider(this.water, beetle.sprite);
+        this.physics.add.collider(this.waterBoundary, beetle.sprite);
         this.physics.add.collider(
             this.basilisk.sprite,
             beetle.sprite,
