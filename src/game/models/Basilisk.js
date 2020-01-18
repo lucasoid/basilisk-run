@@ -3,7 +3,9 @@ import footSplash from '../assets/sfx/foot_splash.wav';
 import { dispatch, types, getState } from '../state';
 import constants from '../constants';
 
-const SPEED = 400;
+const SPEED = 500;
+const SWIM_SPEED = 200;
+const JUMP_SPEED = 350;
 
 export class Basilisk {
     static handle = 'basilisk';
@@ -20,8 +22,6 @@ export class Basilisk {
     static length = 320;
     static collideLength = 200;
     static height = 120;
-    static defaultSpeed = 1;
-    static maxSpeed = 3;
     static jesusModeIntervalLength = 250;
     static JESUS_MODE_STATUSES = {
         ACTIVE: 'active',
@@ -36,7 +36,6 @@ export class Basilisk {
     sprite = null;
     startX = 0;
     startY = 0;
-    speed = Basilisk.defaultSpeed;
     jesusModeInterval = null;
     jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.INACTIVE;
     direction = Basilisk.DIRECTION.LEFT;
@@ -201,19 +200,11 @@ export class Basilisk {
         });
     };
 
-    setSpeed = speed => {
-        const prev = this.speed;
-        const next = Math.min(Basilisk.maxSpeed, Math.max(speed, 0));
-        this.speed = next;
-        // this.speedCallbacks.forEach(cb => cb(next, prev));
-    };
-
     submerge() {
         clearInterval(this.jesusModeInterval);
         this.jesusModeInterval = null;
         this.jesusModeStatus = Basilisk.JESUS_MODE_STATUSES.SUBMERGED;
         dispatch({ type: types.SET_ENERGY_LEVEL, energyLevel: 0 });
-        this.setSpeed(0.5);
     }
 
     emerge() {
@@ -223,8 +214,6 @@ export class Basilisk {
         const { energyLevel } = getState();
         if (energyLevel < constants.player.defaultEnergy)
             dispatch({ type: types.RESET_ENERGY_LEVEL });
-        if (this.speed <= Basilisk.defaultSpeed)
-            this.setSpeed(Basilisk.defaultSpeed);
     }
 
     startJesusMode = () => {
@@ -244,7 +233,7 @@ export class Basilisk {
     };
 
     runLeft = () => {
-        this.sprite.setVelocityX(-1 * SPEED * this.speed);
+        this.sprite.setVelocityX(-1 * SPEED);
         if (this.sprite.body.blocked.down) {
             this.sprite.anims.play(Basilisk.animations.runLeft, true);
         } else {
@@ -254,7 +243,7 @@ export class Basilisk {
     };
 
     runRight = () => {
-        this.sprite.setVelocityX(1 * SPEED * this.speed);
+        this.sprite.setVelocityX(1 * SPEED);
         if (this.sprite.body.blocked.down) {
             this.sprite.anims.play(Basilisk.animations.runRight, true);
         } else {
@@ -264,7 +253,7 @@ export class Basilisk {
     };
 
     swimLeft = () => {
-        this.sprite.setVelocityX(-1 * SPEED * this.speed);
+        this.sprite.setVelocityX(-1 * SWIM_SPEED);
         if (this.sprite.body.blocked.down) {
             this.sprite.anims.play(Basilisk.animations.swimLeft, true);
         }
@@ -272,7 +261,7 @@ export class Basilisk {
     };
 
     swimRight = () => {
-        this.sprite.setVelocityX(1 * SPEED * this.speed);
+        this.sprite.setVelocityX(1 * SWIM_SPEED);
         if (this.sprite.body.blocked.down) {
             this.sprite.anims.play(Basilisk.animations.swimRight, true);
         }
@@ -280,7 +269,11 @@ export class Basilisk {
     };
 
     jump = () => {
-        this.sprite.setVelocityY(-1 * Math.max(300, SPEED * this.speed));
+        let multiplier =
+            this.jesusModeStatus === Basilisk.JESUS_MODE_STATUSES.SUBMERGED
+                ? 0.5
+                : 1;
+        this.sprite.setVelocityY(-1 * Math.max(300, JUMP_SPEED * multiplier));
         if (this.direction === Basilisk.DIRECTION.LEFT) {
             this.sprite.anims.play(Basilisk.animations.jumpLeft, true);
         } else {
