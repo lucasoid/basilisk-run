@@ -92,22 +92,22 @@ export class Level extends Scene {
     };
 
     createForest = (tileset, map) => {
-        const forest3 = map.createFromObjects('Forest 3', 51, {
+        const forest3 = map.createFromObjects('Forest 3', 'forest-3', {
             key: 'forest3',
         });
-        const forest2 = map.createFromObjects('Forest 2', 50, {
+        const forest2 = map.createFromObjects('Forest 2', 'forest-2', {
             key: 'forest2',
         });
-        const forest1 = map.createFromObjects('Forest 1', 49, {
+        const forest1 = map.createFromObjects('Forest 1', 'forest-1', {
             key: 'forest1',
         });
-        const trees = map.createFromObjects('Forest Foreground', 52, {
+        const trees = map.createFromObjects('Forest Foreground', 'tree-1', {
             key: 'tree1',
         });
-        const shrub1 = map.createFromObjects('Forest Foreground', 53, {
+        const shrub1 = map.createFromObjects('Forest Foreground', 'shrub-1', {
             key: 'shrub1',
         });
-        const shrub2 = map.createFromObjects('Forest Foreground', 54, {
+        const shrub2 = map.createFromObjects('Forest Foreground', 'shrub-2', {
             key: 'shrub2',
         });
     };
@@ -190,12 +190,8 @@ export class Level extends Scene {
     };
 
     createTarget = (tileset, map) => {
-        const eggs = map.createFromObjects('Sprites', 55, {
-            key: 'egg',
-        });
-        this.target = this.physics.add.group({
-            name: 'eggs',
-        });
+        const eggs = map.createFromObjects('Sprites', 'egg', { key: 'egg' });
+        this.target = this.physics.add.group({ name: 'eggs' });
         eggs.forEach(egg => this.target.add(egg));
     };
 
@@ -227,12 +223,14 @@ export class Level extends Scene {
         if (map.objects) {
             const layer = map.objects.find(l => l.name === 'Sprites');
             if (layer && layer.objects) {
-                const beetleObjects = layer.objects.filter(l => l.gid === 56);
+                const beetleObjects = layer.objects.filter(
+                    l => l.name === 'beetle'
+                );
                 beetleObjects.forEach((loc, i) => {
                     setRespawningPrey('beetle', loc.x, loc.y, i);
                 });
                 const butterflyObjects = layer.objects.filter(
-                    l => l.gid === 57
+                    l => l.name === 'butterfly'
                 );
                 butterflyObjects.forEach((loc, i) => {
                     setRespawningPrey('butterfly', loc.x, loc.y, i);
