@@ -3,6 +3,9 @@ import constants from '../constants';
 import { Basilisk } from '../models/Basilisk';
 import { Beetle } from '../models/Beetle';
 import { Butterfly } from '../models/Butterfly';
+import { dispatch, types, getState } from '../state';
+import { advanceToNextLevel } from './LevelManager';
+
 import tileset from '../assets/tiles.png';
 import skyImg from '../assets/sky-day.png';
 import eggImg from '../assets/egg.png';
@@ -13,7 +16,6 @@ import tree1 from '../assets/tree-1.png';
 import shrub1 from '../assets/shrub-1.png';
 import shrub2 from '../assets/shrub-2.png';
 import hatch from '../assets/sfx/hatch.wav';
-import { dispatch, types, getState } from '../state';
 
 export class Level extends Scene {
     basilisk;
@@ -26,6 +28,7 @@ export class Level extends Scene {
     tilemap;
     prey = [];
     sfx = {};
+    timeouts = [];
 
     constructor(config) {
         super(config);
@@ -60,7 +63,7 @@ export class Level extends Scene {
         const tileset = map.addTilesetImage('tiles', 'tiles', 24, 24, 1, 2);
         this.createForest(tileset, map);
         map.createStaticLayer('Undercoat', tileset, 0, 0);
-        this.createTarget();
+        this.createTarget(tileset, map);
         this.createGround(tileset, map);
         this.createWater(tileset, map);
         this.createShore(tileset, map);
@@ -70,7 +73,7 @@ export class Level extends Scene {
         map.createStaticLayer('WaterEffect', tileset, 0, 0);
         this.setTarget();
         this.sinkOrSwim();
-        this.createPrey();
+        this.createPrey(tileset, map);
         this.sfx.hatch = this.sound.add('hatch');
     };
 
@@ -186,18 +189,14 @@ export class Level extends Scene {
         this.physics.add.collider(this.basilisk.sprite, this.shore);
     };
 
-    createTarget = () => {
+    createTarget = (tileset, map) => {
+        const eggs = map.createFromObjects('Sprites', 55, {
+            key: 'egg',
+        });
         this.target = this.physics.add.group({
             name: 'eggs',
         });
-        for (let i = 0; i < 3; i++) {
-            let egg = this.physics.add.image(
-                this.targetPosition.x + 24 - i * 24,
-                this.targetPosition.y,
-                'egg'
-            );
-            this.target.add(egg);
-        }
+        eggs.forEach(egg => this.target.add(egg));
     };
 
     setTarget = () => {
@@ -209,8 +208,38 @@ export class Level extends Scene {
         });
     };
 
-    // abstract
-    createPrey = () => {};
+    createPrey = (tileset, map) => {
+        const beetles = {};
+        const butterflies = {};
+        const setRespawningPrey = (type, x, y, i) => {
+            let tracker = type === 'beetle' ? beetles : butterflies;
+            let spawn =
+                type === 'beetle' ? this.spawnBeetle : this.spawnButterfly;
+            tracker[i] = spawn(x, y, () => {
+                delete tracker[i];
+                let tid = setTimeout(() => {
+                    tracker[i] = setRespawningPrey(type, x, y, i);
+                }, 3000);
+                this.timeouts.push(tid);
+            });
+        };
+
+        if (map.objects) {
+            const layer = map.objects.find(l => l.name === 'Sprites');
+            if (layer && layer.objects) {
+                const beetleObjects = layer.objects.filter(l => l.gid === 56);
+                beetleObjects.forEach((loc, i) => {
+                    setRespawningPrey('beetle', loc.x, loc.y, i);
+                });
+                const butterflyObjects = layer.objects.filter(
+                    l => l.gid === 57
+                );
+                butterflyObjects.forEach((loc, i) => {
+                    setRespawningPrey('butterfly', loc.x, loc.y, i);
+                });
+            }
+        }
+    };
 
     spawnBeetle = (x, y, onDestroy = () => {}) => {
         const beetle = new Beetle(this, this.basilisk);
@@ -270,5 +299,10 @@ export class Level extends Scene {
             null
         );
         return butterfly;
+    };
+
+    onWinLevel = () => {
+        advanceToNextLevel();
+        this.timeouts.forEach(tid => clearTimeout(tid));
     };
 }
