@@ -62,15 +62,16 @@ export class Level extends Scene {
         map.addTilesetImage();
         const tileset = map.addTilesetImage('tiles', 'tiles', 24, 24, 1, 2);
         this.createForest(tileset, map);
-        map.createStaticLayer('Undercoat', tileset, 0, 0);
+        // map.createStaticLayer('Undercoat', tileset, 0, 0);
         this.createTarget(tileset, map);
         this.createGround(tileset, map);
+        map.createStaticLayer('Shadows', tileset, 0, 0);
+        map.createStaticLayer('Grass', tileset, 0, 0);
         this.createWater(tileset, map);
-        this.createShore(tileset, map);
-        map.createStaticLayer('Topcoat', tileset, 0, 0);
+        this.createPlayerBoundary(tileset, map);
         this.createBounds(map);
         this.basilisk.create();
-        map.createStaticLayer('WaterEffect', tileset, 0, 0);
+        map.createStaticLayer('Water Foreground', tileset, 0, 0);
         this.setTarget();
         this.sinkOrSwim();
         this.createPrey(tileset, map);
@@ -121,17 +122,19 @@ export class Level extends Scene {
         this.water = map.createStaticLayer('Water', tileset, 0, 0);
         this.water.setCollisionByProperty({ collides: true });
         this.waterBoundary = map.createStaticLayer(
-            'WaterBoundary',
+            'Water Boundary',
             tileset,
             0,
             0
         );
         this.waterBoundary.setCollisionByProperty({ water_boundary: true });
+        this.waterBoundary.visible = false;
     };
 
-    createShore = (tileset, map) => {
-        this.shore = map.createStaticLayer('Shore', tileset, 0, 0);
+    createPlayerBoundary = (tileset, map) => {
+        this.shore = map.createStaticLayer('Player Boundary', tileset, 0, 0);
         this.shore.setCollisionByProperty({ collides: true });
+        this.shore.visible = false;
     };
 
     createBounds = map => {
