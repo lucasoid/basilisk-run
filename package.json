@@ -13,7 +13,7 @@
         "parcel-bundler": "^1.12.4",
         "prettier": "^1.19.1",
         "pretty-quick": "^2.0.1",
-        "tile-extruder": "^2.0.3"
+        "tile-extruder": "^2.0.5"
     },
     "scripts": {
         "extrude-tiles": "tile-extruder --tileWidth 24 --tileHeight 24 --input src/game/assets/tiles-raw.png --output src/game/assets/tiles.png",
