@@ -63,11 +63,11 @@ export class Basilisk {
             this.startY,
             Basilisk.handle
         );
-        this.sprite.body.setSize(
-            Basilisk.collideLength,
-            Basilisk.height,
-            false
-        );
+        // this.sprite.body.setSize(
+        //     Basilisk.collideLength,
+        //     Basilisk.height,
+        //     false
+        // );
         this.setDirection(true);
         this.sprite.setBounce(0.1);
         this.sprite.setCollideWorldBounds(true);
@@ -289,10 +289,10 @@ export class Basilisk {
         this.direction = isRight
             ? Basilisk.DIRECTION.RIGHT
             : Basilisk.DIRECTION.LEFT;
-        this.sprite.body.setOffset(
-            isRight ? Basilisk.length - Basilisk.collideLength : 0,
-            0
-        );
+        // this.sprite.body.setOffset(
+        //     isRight ? Basilisk.length - Basilisk.collideLength : 0,
+        //     0
+        // );
     };
 
     rest = () => {

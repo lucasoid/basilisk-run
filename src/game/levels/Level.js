@@ -4,7 +4,7 @@ import { Basilisk } from '../models/Basilisk';
 import { Beetle } from '../models/Beetle';
 import { Butterfly } from '../models/Butterfly';
 import { dispatch, types, getState } from '../state';
-import { advanceToNextLevel } from './LevelManager';
+import { advanceToNextLevel, restartCurrentLevel } from './LevelManager';
 
 import tileset from '../assets/tiles.png';
 import skyImg from '../assets/sky-day.png';
@@ -303,7 +303,12 @@ export class Level extends Scene {
     };
 
     onWinLevel = () => {
-        advanceToNextLevel();
+        try {
+            advanceToNextLevel();
+        } catch (e) {
+            restartCurrentLevel();
+        }
+
         this.timeouts.forEach(tid => clearTimeout(tid));
     };
 }

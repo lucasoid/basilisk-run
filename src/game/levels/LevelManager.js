@@ -14,7 +14,7 @@ const scenes = {
     LEVEL2: {
         title: 'Level 2',
         key: 'Level2',
-        scene: new Level1(),
+        scene: new Level2(),
     },
     LEVEL3: {
         title: 'Level 3',

@@ -1,9 +1,7 @@
 import { Level } from './Level';
-import level2Map from './tilemaps/Level1.json';
-import { dispatch, types } from '../state';
-import { levels } from './LevelManager';
+import level2Map from './tilemaps/Level2.json';
 
-const GROUND_HEIGHT = 72;
+const GROUND_HEIGHT = 144;
 
 export class Level2 extends Level {
     constructor(config) {
@@ -12,17 +10,5 @@ export class Level2 extends Level {
         this.tilemap = level2Map;
         this.basilisk.startX = 100;
         this.basilisk.startY = 960 - GROUND_HEIGHT - 100;
-        this.targetPosition = {
-            x: 6720 - 100,
-            y: 960 - GROUND_HEIGHT - 100,
-        };
     }
-
-    createPrey = () => {
-        this.spawnBeetle(300, 960 - GROUND_HEIGHT - 10);
-    };
-
-    onWinLevel = () => {
-        dispatch({ type: types.SET_LEVEL, level: levels.LEVEL1.key });
-    };
 }
